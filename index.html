@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="EXOS Title API Client Intelligence executive site built from the api-client-intelligence repository." />
+  <title>EXOS Title API Client Intelligence | Conard Layer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --paper: #fbfaf7;
+      --paper-2: #f3f0e7;
+      --ink: #0d1117;
+      --muted: #667085;
+      --line: #e5e1d7;
+      --navy: #0b2545;
+      --navy-2: #111827;
+      --blue: #1a5276;
+      --accent: #2e86ab;
+      --gold: #d9a441;
+      --gold-2: #ba7517;
+      --green: #1d9e75;
+      --red: #a32d2d;
+      --card: #ffffff;
+      --shadow: 0 24px 80px rgba(17, 24, 39, 0.12);
+      --soft-shadow: 0 12px 34px rgba(17, 24, 39, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(217,164,65,0.22) 0%, transparent 32%),
+        radial-gradient(circle at top right, rgba(46,134,171,0.16) 0%, transparent 30%),
+        linear-gradient(135deg, var(--paper) 0%, var(--paper-2) 100%);
+      color: var(--ink);
+      line-height: 1.5;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .wrap {
+      width: min(1180px, calc(100% - 48px));
+      margin: 0 auto;
+    }
+
+    .nav-shell {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(251,250,247,0.82);
+      border-bottom: 1px solid rgba(17,24,39,0.08);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav {
+      height: 66px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--navy), var(--accent));
+      box-shadow: 0 10px 22px rgba(11,37,69,0.24);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      font-size: 14px;
+      color: #4b5563;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .hero {
+      min-height: 82vh;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 52px;
+      align-items: center;
+      padding: 78px 0 56px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--gold-2);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 28px;
+      height: 2px;
+      background: var(--gold-2);
+    }
+
+    .hero h1 {
+      font-family: "DM Serif Display", Georgia, serif;
+      font-size: clamp(50px, 7.4vw, 92px);
+      line-height: 0.92;
+      letter-spacing: -0.05em;
+      margin: 18px 0 22px;
+      max-width: 780px;
+    }
+
+    .hero .lead {
+      color: #374151;
+      font-size: 20px;
+      max-width: 720px;
+    }
+
+    .actions {
+      margin-top: 30px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--navy-2);
+      border-radius: 999px;
+      padding: 13px 18px;
+      background: var(--navy-2);
+      color: white;
+      text-decoration: none;
+      font-weight: 900;
+      box-shadow: 0 12px 28px rgba(17,24,39,0.18);
+    }
+
+    .btn.secondary {
+      background: transparent;
+      color: var(--navy-2);
+      box-shadow: none;
+    }
+
+    .hero-card {
+      position: relative;
+      overflow: hidden;
+      background: #0d1728;
+      color: white;
+      border-radius: 32px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: -30%;
+      background: linear-gradient(120deg, transparent, rgba(217,164,65,0.28), transparent);
+      transform: rotate(18deg);
+    }
+
+    .hero-card-inner {
+      position: relative;
+      z-index: 2;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.14);
+      padding-bottom: 18px;
+      margin-bottom: 20px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(29,158,117,0.14);
+      color: #9cf2cc;
+      font-weight: 900;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #1d9e75;
+      box-shadow: 0 0 0 7px rgba(29,158,117,0.16);
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .metric {
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 18px;
+      padding: 18px;
+      background: rgba(255,255,255,0.07);
+    }
+
+    .metric-label {
+      color: #cfd6e4;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+      font-size: 11px;
+    }
+
+    .metric-value {
+      font-size: 36px;
+      line-height: 1;
+      margin: 10px 0 6px;
+      font-weight: 900;
+    }
+
+    .metric-note {
+      color: #d6deeb;
+      font-size: 13px;
+    }
+
+    .section {
+      padding: 76px 0;
+    }
+
+    .section-title {
+      font-family: "DM Serif Display", Georgia, serif;
+      font-size: clamp(38px, 5vw, 56px);
+      line-height: 0.98;
+      letter-spacing: -0.04em;
+      margin: 12px 0 16px;
+      max-width: 900px;
+    }
+
+    .kicker {
+      color: var(--muted);
+      font-size: 18px;
+      max-width: 860px;
+      margin-bottom: 30px;
+    }
+
+    .badge {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 7px 11px;
+      border: 1px solid #e8d08b;
+      background: #fff7df;
+      color: #75550b;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--soft-shadow);
+    }
+
+    .panel h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      letter-spacing: -0.02em;
+    }
+
+    .panel p {
+      color: #374151;
+      margin: 9px 0;
+    }
+
+    .small {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .flow {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre;
+      overflow: auto;
+      background: #0d1117;
+      color: #d7e3ff;
+      border-radius: 24px;
+      padding: 24px;
+      line-height: 1.4;
+      box-shadow: var(--soft-shadow);
+    }
+
+    .table-shell {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th {
+      text-align: left;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    td {
+      padding: 14px 10px;
+      border-bottom: 1px solid #eeeeea;
+      vertical-align: top;
+    }
+
+    .status-instant {
+      color: var(--green);
+      font-weight: 900;
+    }
+
+    .status-review {
+      color: var(--gold-2);
+      font-weight: 900;
+    }
+
+    .status-flag {
+      color: var(--red);
+      font-weight: 900;
+    }
+
+    .charts {
+      display: grid;
+      gap: 34px;
+    }
+
+    .chart-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      padding: 26px;
+      box-shadow: var(--soft-shadow);
+    }
+
+    .chart-card h3 {
+      font-size: 26px;
+      margin-bottom: 6px;
+      letter-spacing: -0.03em;
+    }
+
+    .chart-read {
+      color: var(--muted);
+      font-style: italic;
+      margin-bottom: 18px;
+    }
+
+    .chart-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 16px;
+      background: #fbfbfa;
+    }
+
+    .caption {
+      font-size: 12px;
+      color: #737373;
+      margin-top: 12px;
+      font-style: italic;
+    }
+
+    .callout {
+      border-left: 4px solid var(--gold);
+      padding: 18px 22px;
+      background: #fff8e6;
+      border-radius: 14px;
+      margin-top: 16px;
+      color: #292524;
+      font-weight: 700;
+    }
+
+    .verdict {
+      background: #0d1728;
+      color: white;
+      border-color: rgba(255,255,255,0.1);
+    }
+
+    .verdict p,
+    .verdict li {
+      color: #d8dee9;
+    }
+
+    .verdict ul {
+      padding-left: 20px;
+      margin-top: 14px;
+    }
+
+    .footer {
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      padding: 42px 0;
+      font-size: 14px;
+    }
+
+    @media (max-width: 920px) {
+      .hero,
+      .grid-2,
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .metric-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="nav-shell">
+    <div class="wrap nav">
+      <div class="brand">
+        <span class="brand-mark"></span>
+        <span>EXOS Client Intelligence</span>
+      </div>
+      <nav class="nav-links">
+        <a href="#gate">Conard Gate</a>
+        <a href="#pipeline">Pipeline</a>
+        <a href="#charts">Charts</a>
+        <a href="#verdict">Verdict</a>
+      </nav>
+    </div>
+  </div>
+
+  <header class="wrap hero">
+    <section>
+      <div class="eyebrow">ServiceLink Catalyst • Technical BA Proof of Capability</div>
+      <h1>Title API trust should be visible before it becomes a lender problem.</h1>
+      <p class="lead">
+        A browser-native executive dashboard built from the api-client-intelligence repository. It translates EXOS client onboarding, schema fidelity, compliance posture, API health, and cycle-time compression into one operating view.
+      </p>
+      <div class="actions">
+        <a class="btn" href="#charts">View analytical layer</a>
+        <a class="btn secondary" href="#verdict">Read ship verdict</a>
+      </div>
+    </section>
+
+    <aside class="hero-card">
+      <div class="hero-card-inner">
+        <div class="status-row">
+          <div>
+            <div class="eyebrow">Live integration feed</div>
+            <h2>CONARD LAYER</h2>
+          </div>
+          <div class="status-pill"><span class="status-dot"></span>Ship with controls</div>
+        </div>
+        <div class="metric-grid">
+          <div class="metric">
+            <div class="metric-label">Active API clients</div>
+            <div class="metric-value">47</div>
+            <div class="metric-note">+6 this quarter</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Instant title decisions</div>
+            <div class="metric-value">91%</div>
+            <div class="metric-note">vs 74% industry avg</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Avg decisioning time</div>
+            <div class="metric-value">4.2s</div>
+            <div class="metric-note">vs 3.1 day manual baseline</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Compliance events</div>
+            <div class="metric-value">2</div>
+            <div class="metric-note">2 field-level flags</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </header>
+
+  <main>
+    <section id="gate" class="wrap section">
+      <span class="badge">Primary diagnostic gate</span>
+      <h2 class="section-title">Can the API produce what the lender needs, and can the gap be governed?</h2>
+      <p class="kicker">
+        The Conard Layer fires before any dashboard data is trusted. It asks three production-readiness questions a Client Integrations BA has to own.
+      </p>
+      <div class="grid-3">
+        <article class="panel">
+          <h3>Gate 1 — API contract fidelity</h3>
+          <p>What is the lender's expected field-level schema, latency, and data format?</p>
+          <p class="small">Risk if unanswered: schema mismatch causes silent data corruption downstream.</p>
+        </article>
+        <article class="panel">
+          <h3>Gate 2 — Compliance boundary</h3>
+          <p>Where does RESPA/TILA exposure live in this workflow?</p>
+          <p class="small">Risk if unanswered: a field-level error is not a bug. It is a compliance event.</p>
+        </article>
+        <article class="panel">
+          <h3>Gate 3 — Cycle-time delta</h3>
+          <p>What measurable reduction in title decisioning time does this integration produce?</p>
+          <p class="small">Risk if unanswered: there is no business case to defend in a lender review.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="wrap section">
+      <span class="badge">Operating architecture</span>
+      <h2 class="section-title">The repository is not just a dashboard. It is a release-readiness operating model.</h2>
+      <p class="kicker">The page below keeps the layered architecture visible, because that is the executive energy of the artifact.</p>
+      <pre class="flow">┌─────────────────────────────────────────────────────────────────────────────┐
+│                    EXOS TITLE API CLIENT INTELLIGENCE                        │
+│              Catalyst Technology & Platform Services -- Onboarding View      │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+LAYER 0  CONARD GATE
+         API schema fidelity → Compliance boundary → Cycle-time delta
+
+LAYER 1  LENDER INTEGRATION INTAKE
+         Cloudvirga • ICE Encompass • Optimal Blue • ULDD • SimpleNexus • nCino • FISERV
+
+LAYER 2  EXOS API EXECUTION SURFACE
+         Instant decision • Order status • Lien search • Image extract • Default portfolio
+
+LAYER 3  ORDER PIPELINE STATE MACHINE
+         Instant decision • Manual review • Pending intake • Compliance flag
+
+LAYER 4  COMPLIANCE GOVERNANCE SURFACE
+         RESPA data integrity • TILA disclosure timing • CFPB audit trail • ML governance
+
+LAYER 5  FRED-STYLE ANALYTICAL VISUALIZATION
+         Cycle-time compression • Order pipeline risk • API and compliance readiness</pre>
+    </section>
+
+    <section id="pipeline" class="wrap section">
+      <span class="badge">Client integration feed</span>
+      <h2 class="section-title">Four order states show why uptime alone is not client trust.</h2>
+      <p class="kicker">The repository data shows one clean instant decision, one manual review, one pending intake, and one compliance flag.</p>
+      <div class="panel table-shell">
+        <table>
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Partner</th>
+              <th>Status</th>
+              <th>Schema</th>
+              <th>Latency</th>
+              <th>Signal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>TOR-2206-0184</td>
+              <td>Cloudvirga / ICE Encompass</td>
+              <td class="status-instant">Instant decision</td>
+              <td>MISMO 3.4</td>
+              <td>3.8s</td>
+              <td>Complete — title commitment issued.</td>
+            </tr>
+            <tr>
+              <td>TOR-2206-0191</td>
+              <td>Optimal Blue / ULDD feed</td>
+              <td class="status-review">Manual review</td>
+              <td>MISMO 3.4 — partial</td>
+              <td>14.2s</td>
+              <td>Held at lien search — schema field mismatch.</td>
+            </tr>
+            <tr>
+              <td>TOR-2206-0197</td>
+              <td>SimpleNexus / nCino</td>
+              <td class="status-review">Pending intake</td>
+              <td>Awaiting handshake</td>
+              <td>—</td>
+              <td>OAuth token handshake in progress.</td>
+            </tr>
+            <tr>
+              <td>TOR-2206-0178</td>
+              <td>FISERV LoanServ / default</td>
+              <td class="status-flag">Compliance flag</td>
+              <td>Legacy XML</td>
+              <td>Timed out</td>
+              <td>RESPA field integrity flag — escalated.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="wrap section">
+      <div class="grid-2">
+        <article class="panel">
+          <h3>Compliance posture — Conard Gate 2</h3>
+          <p><strong>RESPA data integrity:</strong> 45 of 47 clients are passing MISMO 3.4 validation.</p>
+          <p><strong>TILA disclosure timing:</strong> two legacy XML clients are not triggering the LE disclosure window correctly.</p>
+          <p><strong>CFPB audit trail:</strong> full event log retained per transaction with immutable timestamps.</p>
+          <p><strong>ML model governance:</strong> AI decisioning outputs include confidence scores and human override logs.</p>
+        </article>
+        <article class="panel">
+          <h3>Governance gap log — open items</h3>
+          <p><strong>TOR-2206-0178:</strong> FISERV legacy XML is missing the required SettlementChargeType node on loan modification workflows.</p>
+          <p><strong>TOR-2206-0191:</strong> Optimal Blue is delivering partial MISMO 3.4 payload with PropertyIdentifier truncated after the first record.</p>
+          <div class="callout">The real question is not whether the integration works. The real question is whether the client can trust what it produces.</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="charts" class="wrap section">
+      <span class="badge">FRED-style analytical layer</span>
+      <h2 class="section-title">Three charts built from the repository's EXOS data.</h2>
+      <p class="kicker">These are embedded directly in the HTML, so they travel with the page and do not depend on external image files.</p>
+      <div class="charts">
+        <article class="chart-card">
+          <h3>CONARD-01 | Cycle-Time Compression</h3>
+          <p class="chart-read">P&L read: EXOS compresses title decisioning from days to seconds, but speed only creates value when the schema and compliance gates hold.</p>
+          <svg class="chart-svg" viewBox="0 0 1120 560" xmlns="http://www.w3.org/2000/svg">
+            <rect width="1120" height="560" fill="#fbfbfa"/>
+            <text x="76" y="42" font-size="24" font-weight="800" fill="#111">Cycle-Time Compression | EXOS vs Manual Baseline</text>
+            <text x="76" y="66" font-size="14" fill="#667085" font-style="italic">Industry baseline in hours; EXOS values compress to near-zero on the same axis.</text>
+            <line x1="80" x2="1080" y1="450" y2="450" stroke="#111" stroke-width="2"/>
+            <line x1="80" x2="80" y1="90" y2="450" stroke="#111" stroke-width="2"/>
+            <line x1="80" x2="1080" y1="450" y2="450" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="360" y2="360" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="270" y2="270" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="180" y2="180" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="90" y2="90" stroke="#ddd"/>
+            <text x="35" y="455" font-size="13">0h</text>
+            <text x="28" y="365" font-size="13">20h</text>
+            <text x="28" y="275" font-size="13">40h</text>
+            <text x="28" y="185" font-size="13">60h</text>
+            <text x="28" y="95" font-size="13">80h</text>
+            <line x1="80" x2="1080" y1="432" y2="432" stroke="#a32d2d" stroke-dasharray="8 8"/>
+            <text x="95" y="422" font-size="13" font-weight="800" fill="#a32d2d">4h management attention threshold</text>
+            <rect x="122" y="126" width="96" height="324" fill="#111827" rx="8"/>
+            <rect x="372" y="175.5" width="96" height="274.5" fill="#111827" rx="8"/>
+            <rect x="622" y="126" width="96" height="324" fill="#111827" rx="8"/>
+            <rect x="872" y="207" width="96" height="243" fill="#111827" rx="8"/>
+            <polyline points="170,443 420,442 670,441 920,440" fill="none" stroke="#d9a441" stroke-width="5"/>
+            <circle cx="170" cy="443" r="8" fill="#d9a441"/>
+            <circle cx="420" cy="442" r="8" fill="#d9a441"/>
+            <circle cx="670" cy="441" r="8" fill="#d9a441"/>
+            <circle cx="920" cy="440" r="8" fill="#d9a441"/>
+            <text x="170" y="116" text-anchor="middle" font-weight="800">72h</text>
+            <text x="420" y="166" text-anchor="middle" font-weight="800">61h</text>
+            <text x="670" y="116" text-anchor="middle" font-weight="800">72h</text>
+            <text x="920" y="198" text-anchor="middle" font-weight="800">54h</text>
+            <text x="170" y="486" text-anchor="middle">Purchase</text>
+            <text x="420" y="486" text-anchor="middle">Refinance</text>
+            <text x="670" y="486" text-anchor="middle">Default mgmt</text>
+            <text x="920" y="486" text-anchor="middle">Loan mod</text>
+            <text x="620" y="124" font-size="14" fill="#111">EXOS instant decisioning appears near-zero because seconds are tiny against a 3–5 day baseline.</text>
+          </svg>
+          <p class="caption">Repository values: purchase 72h baseline vs &lt;4 seconds; refinance 61h vs 0.004h; default 72h vs 0.07h; loan mod 54h vs 0.11h.</p>
+        </article>
+
+        <article class="chart-card">
+          <h3>CONARD-02 | Order Pipeline Risk Index</h3>
+          <p class="chart-read">P&L read: the pipeline deteriorates when schema certainty and compliance posture deteriorate.</p>
+          <svg class="chart-svg" viewBox="0 0 1120 540" xmlns="http://www.w3.org/2000/svg">
+            <rect width="1120" height="540" fill="#fbfbfa"/>
+            <text x="76" y="42" font-size="24" font-weight="800" fill="#111">Order Pipeline Risk Index | Readiness Score</text>
+            <text x="76" y="66" font-size="14" fill="#667085" font-style="italic">Derived score combines order status, schema validity, latency, and compliance posture.</text>
+            <line x1="80" x2="1080" y1="430" y2="430" stroke="#111" stroke-width="2"/>
+            <line x1="80" x2="80" y1="70" y2="430" stroke="#111" stroke-width="2"/>
+            <line x1="80" x2="1080" y1="430" y2="430" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="346" y2="346" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="262" y2="262" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="178" y2="178" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="94" y2="94" stroke="#ddd"/>
+            <text x="42" y="435">0</text>
+            <text x="35" y="351">25</text>
+            <text x="35" y="267">50</text>
+            <text x="35" y="183">75</text>
+            <text x="28" y="99">100</text>
+            <line x1="80" x2="1080" y1="161" y2="161" stroke="#1d9e75" stroke-dasharray="8 8"/>
+            <text x="95" y="151" font-size="13" font-weight="800" fill="#1d9e75">Ship-ready threshold: 80</text>
+            <line x1="80" x2="1080" y1="262" y2="262" stroke="#a32d2d" stroke-dasharray="8 8"/>
+            <text x="95" y="252" font-size="13" font-weight="800" fill="#a32d2d">Management attention threshold: 50</text>
+            <polyline points="150,94 400,195 650,245 900,346" fill="none" stroke="#111827" stroke-width="5"/>
+            <circle cx="150" cy="94" r="10" fill="#1d9e75" stroke="#fff" stroke-width="3"/>
+            <circle cx="400" cy="195" r="10" fill="#d9a441" stroke="#fff" stroke-width="3"/>
+            <circle cx="650" cy="245" r="10" fill="#d9a441" stroke="#fff" stroke-width="3"/>
+            <circle cx="900" cy="346" r="10" fill="#a32d2d" stroke="#fff" stroke-width="3"/>
+            <text x="150" y="78" text-anchor="middle" font-weight="800">100</text>
+            <text x="400" y="179" text-anchor="middle" font-weight="800">70</text>
+            <text x="650" y="229" text-anchor="middle" font-weight="800">55</text>
+            <text x="900" y="330" text-anchor="middle" font-weight="800">25</text>
+            <text x="150" y="472" text-anchor="middle">Instant decision</text>
+            <text x="400" y="472" text-anchor="middle">Pending intake</text>
+            <text x="650" y="472" text-anchor="middle">Manual review</text>
+            <text x="900" y="472" text-anchor="middle">Compliance flag</text>
+            <text x="585" y="128" font-size="14" fill="#111">Compliance-flagged orders fall below the attention threshold.</text>
+          </svg>
+          <p class="caption">Repository values: instant decision 100, pending intake 70, manual review 55, compliance flag 25.</p>
+        </article>
+
+        <article class="chart-card">
+          <h3>CONARD-03 | API & Compliance Readiness</h3>
+          <p class="chart-read">P&L read: uptime is not the same thing as release readiness. Lien search is available, but the schema exception creates client-trust risk.</p>
+          <svg class="chart-svg" viewBox="0 0 1120 540" xmlns="http://www.w3.org/2000/svg">
+            <rect width="1120" height="540" fill="#fbfbfa"/>
+            <text x="76" y="42" font-size="24" font-weight="800" fill="#111">API & Compliance Readiness | Uptime vs Trust Gate</text>
+            <text x="76" y="66" font-size="14" fill="#667085" font-style="italic">Black dashed line: uptime. Gold line: derived readiness score.</text>
+            <line x1="80" x2="1080" y1="430" y2="430" stroke="#111" stroke-width="2"/>
+            <line x1="80" x2="80" y1="70" y2="430" stroke="#111" stroke-width="2"/>
+            <line x1="80" x2="1080" y1="430" y2="430" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="370" y2="370" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="310" y2="310" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="250" y2="250" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="190" y2="190" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="130" y2="130" stroke="#ddd"/>
+            <text x="35" y="435">70</text>
+            <text x="35" y="375">75</text>
+            <text x="35" y="315">80</text>
+            <text x="35" y="255">85</text>
+            <text x="35" y="195">90</text>
+            <text x="35" y="135">95</text>
+            <line x1="80" x2="1080" y1="71" y2="71" stroke="#111827" stroke-dasharray="8 8"/>
+            <text x="95" y="96" font-size="13" font-weight="800" fill="#111827">Enterprise reliability threshold: 99.9%</text>
+            <line x1="80" x2="1080" y1="130" y2="130" stroke="#1d9e75" stroke-dasharray="8 8"/>
+            <text x="95" y="120" font-size="13" font-weight="800" fill="#1d9e75">Client-trust Conard gate: 95</text>
+            <line x1="80" x2="1080" y1="310" y2="310" stroke="#a32d2d" stroke-dasharray="8 8"/>
+            <text x="95" y="300" font-size="13" font-weight="800" fill="#a32d2d">Controlled-release floor: 80</text>
+            <polyline points="130,70 340,69 550,72 760,71 970,70" fill="none" stroke="#111827" stroke-width="4" stroke-dasharray="8 8"/>
+            <polyline points="130,94 340,82 550,358 760,142 970,118" fill="none" stroke="#d9a441" stroke-width="5"/>
+            <circle cx="130" cy="70" r="6" fill="#111827"/>
+            <circle cx="340" cy="69" r="6" fill="#111827"/>
+            <circle cx="550" cy="72" r="6" fill="#111827"/>
+            <circle cx="760" cy="71" r="6" fill="#111827"/>
+            <circle cx="970" cy="70" r="6" fill="#111827"/>
+            <circle cx="130" cy="94" r="9" fill="#d9a441" stroke="#fff" stroke-width="3"/>
+            <circle cx="340" cy="82" r="9" fill="#d9a441" stroke="#fff" stroke-width="3"/>
+            <circle cx="550" cy="358" r="9" fill="#a32d2d" stroke="#fff" stroke-width="3"/>
+            <circle cx="760" cy="142" r="9" fill="#d9a441" stroke="#fff" stroke-width="3"/>
+            <circle cx="970" cy="118" r="9" fill="#d9a441" stroke="#fff" stroke-width="3"/>
+            <text x="130" y="472" text-anchor="middle">Instant decision</text>
+            <text x="340" y="472" text-anchor="middle">Order status</text>
+            <text x="550" y="472" text-anchor="middle">Lien search</text>
+            <text x="760" y="472" text-anchor="middle">Image extract</text>
+            <text x="970" y="472" text-anchor="middle">Default portfolio</text>
+            <text x="585" y="338" font-size="14" fill="#111">The endpoint works, but schema exceptions create compliance exposure.</text>
+          </svg>
+          <p class="caption">Repository values: uptime ranges from 99.81% to 99.99%; lien search is the readiness dip because the schema exception creates compliance exposure.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="verdict" class="wrap section">
+      <article class="panel verdict">
+        <span class="badge">Conard Layer Verdict</span>
+        <h2 class="section-title">SHIP WITH CONTROLS</h2>
+        <p>The business value is real. Cycle-time compression is obvious. API health is strong across four of five endpoints.</p>
+        <p>The release story holds only if schema exceptions, LE disclosure timing for legacy XML clients, and open compliance flags are governed before reaching the lender client.</p>
+        <ul>
+          <li>Patch SettlementChargeType node validation before title commitment issuance.</li>
+          <li>Resolve PropertyIdentifier array truncation before multi-parcel lien search resumes.</li>
+          <li>Keep human override and audit trail visible to lender stakeholders.</li>
+        </ul>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <strong>McDonald (2026) | Epoch Frameworks LLC | DACR License v2.6</strong><br />
+      Regulated FinServ Presales Framework — Conard Layer extension. Built from the GitHub api-client-intelligence repository.
+    </div>
+  </footer>
+</body>
+</html>
