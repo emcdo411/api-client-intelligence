@@ -1,0 +1,198 @@
+
+<h2 class="sr-only">ServiceLink vs Stewart Information Services — AI Adoption Intelligence Brief, McDonald Tri-Skill Analysis, June 2026</h2>
+
+<style>
+.brief-wrap { padding: 1.5rem 0; font-size: 14px; }
+.section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-text-secondary); margin: 0 0 10px; }
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px; }
+.kpi { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px 14px; }
+.kpi .label { font-size: 11px; color: var(--color-text-secondary); margin: 0 0 4px; }
+.kpi .val { font-size: 22px; font-weight: 500; color: var(--color-text-primary); line-height: 1.1; }
+.kpi .sub { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+.kpi.sl .val { color: #534AB7; }
+.kpi.stc .val { color: #0F6E56; }
+.divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 20px 0; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+.card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 14px 16px; }
+.card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.badge { font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 4px; }
+.badge-sl { background: #EEEDFE; color: #3C3489; }
+.badge-stc { background: #E1F5EE; color: #085041; }
+.card-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+.score-row { display: flex; align-items: center; gap: 8px; margin: 6px 0; }
+.score-bar-wrap { flex: 1; height: 6px; background: var(--color-background-secondary); border-radius: 3px; overflow: hidden; }
+.score-bar { height: 100%; border-radius: 3px; }
+.sl-bar { background: #534AB7; }
+.stc-bar { background: #1D9E75; }
+.score-label { font-size: 12px; color: var(--color-text-secondary); width: 80px; }
+.score-num { font-size: 12px; font-weight: 500; width: 32px; text-align: right; }
+.score-num.sl { color: #534AB7; }
+.score-num.stc { color: #1D9E75; }
+.finding { font-size: 12px; color: var(--color-text-secondary); line-height: 1.55; margin: 6px 0 0; padding: 8px 10px; background: var(--color-background-secondary); border-radius: 6px; }
+.verdict { font-size: 12px; font-weight: 500; padding: 5px 10px; border-radius: 6px; margin-top: 8px; display: inline-block; }
+.verdict-sl { background: #EEEDFE; color: #26215C; }
+.verdict-stc { background: #E1F5EE; color: #04342C; }
+.faang-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+.faang-card { border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 14px 16px; background: var(--color-background-primary); }
+.faang-dim { display: flex; align-items: center; margin: 7px 0; gap: 8px; font-size: 12px; }
+.faang-dim .dim-name { width: 130px; color: var(--color-text-secondary); flex-shrink: 0; }
+.faang-dim .bar-w { flex: 1; height: 5px; background: var(--color-background-secondary); border-radius: 3px; overflow: hidden; }
+.faang-dim .bar-f { height: 100%; border-radius: 3px; }
+.faang-dim .dim-score { font-size: 11px; font-weight: 500; width: 28px; text-align: right; }
+.amazon-delta { font-size: 11px; padding: 4px 8px; border-radius: 4px; margin-top: 10px; line-height: 1.5; background: #FAEEDA; color: #412402; }
+.winner-badge { font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 4px; background: #FAEEDA; color: #633806; margin-bottom: 10px; display: inline-block; }
+.conard-block { border-left: 2.5px solid #185FA5; padding: 10px 14px; margin: 14px 0; background: var(--color-background-secondary); border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; }
+.conard-verdict { font-size: 12px; font-weight: 500; color: #185FA5; }
+.conard-text { font-size: 12px; color: var(--color-text-secondary); line-height: 1.55; margin: 4px 0 0; }
+.three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+.mini-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 10px 12px; }
+.mini-card .mc-label { font-size: 11px; color: var(--color-text-secondary); margin-bottom: 3px; }
+.mini-card .mc-val { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+.footer-note { font-size: 11px; color: var(--color-text-secondary); line-height: 1.6; padding: 10px 14px; background: var(--color-background-secondary); border-radius: var(--border-radius-md); }
+.winner-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.win-label { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+.win-sub { font-size: 12px; color: var(--color-text-secondary); }
+</style>
+
+<div class="brief-wrap">
+
+<p class="section-label">Tri-Skill Intelligence Brief — NorthStar v4.1 + MOC v4.9 + FinServ Presales | McDonald (2026)</p>
+
+<div class="kpi-grid">
+  <div class="kpi sl">
+    <div class="label">AI Adoption Score — ServiceLink</div>
+    <div class="val">72 / 100</div>
+    <div class="sub">EMBEDDED SYSTEM</div>
+  </div>
+  <div class="kpi stc">
+    <div class="label">AI Adoption Score — Stewart (STC)</div>
+    <div class="val">61 / 100</div>
+    <div class="sub">MATURING / AI THEATER RISK</div>
+  </div>
+  <div class="kpi sl">
+    <div class="label">AI ROI Index — ServiceLink</div>
+    <div class="val">74 / 100</div>
+    <div class="sub">Measurable cycle compression</div>
+  </div>
+  <div class="kpi stc">
+    <div class="label">AI ROI Index — Stewart (STC)</div>
+    <div class="val">58 / 100</div>
+    <div class="sub">Acquisition-led, ROI unconfirmed</div>
+  </div>
+</div>
+
+<hr class="divider">
+<p class="section-label">Competitive context — who is ServiceLink's largest competitor?</p>
+<div class="finding" style="margin-bottom:16px">
+Stewart Information Services (NYSE: STC) is identified as ServiceLink's primary strategic competitor in the tech-enabled title, closing, valuation, and mortgage services segment. FNF is ServiceLink's parent, not a competitor. Stewart's Q4 2025 revenue was $794.5M (+19.6% YoY), market cap ~$2.0B. ServiceLink operates within FNF's $2.0B Q1 2026 revenue engine as its mortgage services arm (~$147M standalone attributed revenue). Stewart acquired MCS (December 2025) and NAN (Q1 2026), directly encroaching on ServiceLink's default and valuation turf.
+</div>
+
+<hr class="divider">
+<p class="section-label">AI Adoption Score — dimension breakdown</p>
+
+<div class="two-col">
+  <div class="card">
+    <div class="card-head">
+      <span class="badge badge-sl">ServiceLink / FNF</span>
+      <span class="card-title" style="font-size:13px">Score: 72 — Embedded System</span>
+    </div>
+    <div class="score-row"><span class="score-label">Data foundation</span><div class="score-bar-wrap"><div class="score-bar sl-bar" style="width:82%"></div></div><span class="score-num sl">82</span></div>
+    <div class="score-row"><span class="score-label">Workflow depth</span><div class="score-bar-wrap"><div class="score-bar sl-bar" style="width:78%"></div></div><span class="score-num sl">78</span></div>
+    <div class="score-row"><span class="score-label">Client-facing AI</span><div class="score-bar-wrap"><div class="score-bar sl-bar" style="width:85%"></div></div><span class="score-num sl">85</span></div>
+    <div class="score-row"><span class="score-label">Governance posture</span><div class="score-bar-wrap"><div class="score-bar sl-bar" style="width:68%"></div></div><span class="score-num sl">68</span></div>
+    <div class="score-row"><span class="score-label">AI stack coherence</span><div class="score-bar-wrap"><div class="score-bar sl-bar" style="width:70%"></div></div><span class="score-num sl">70</span></div>
+    <div class="score-row"><span class="score-label">Cultural fit</span><div class="score-bar-wrap"><div class="score-bar sl-bar" style="width:65%"></div></div><span class="score-num sl">65</span></div>
+    <div class="finding">EXOS platform is the industry's only real-time closing scheduling AI. Deployed 8+ years. UAD 3.6 and ICE EPC integration confirm roadmap discipline. FNF parent signals: AI productivity gains explicitly cited as a margin driver in Q1 2026 SEC filing. Azure is the confirmed cloud substrate per LeadIQ tech stack data. Governance gap: no public AI governance framework declaration at the ServiceLink entity level.</div>
+    <span class="verdict verdict-sl">Verdict: Embedded System — AI is the product, not a feature layer</span>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <span class="badge badge-stc">Stewart (STC)</span>
+      <span class="card-title" style="font-size:13px">Score: 61 — Maturing / AI Theater Risk</span>
+    </div>
+    <div class="score-row"><span class="score-label">Data foundation</span><div class="score-bar-wrap"><div class="score-bar stc-bar" style="width:65%"></div></div><span class="score-num stc">65</span></div>
+    <div class="score-row"><span class="score-label">Workflow depth</span><div class="score-bar-wrap"><div class="score-bar stc-bar" style="width:55%"></div></div><span class="score-num stc">55</span></div>
+    <div class="score-row"><span class="score-label">Client-facing AI</span><div class="score-bar-wrap"><div class="score-bar stc-bar" style="width:62%"></div></div><span class="score-num stc">62</span></div>
+    <div class="score-row"><span class="score-label">Governance posture</span><div class="score-bar-wrap"><div class="score-bar stc-bar" style="width:72%"></div></div><span class="score-num stc">72</span></div>
+    <div class="score-row"><span class="score-label">AI stack coherence</span><div class="score-bar-wrap"><div class="score-bar stc-bar" style="width:55%"></div></div><span class="score-num stc">55</span></div>
+    <div class="score-row"><span class="score-label">Cultural fit</span><div class="score-bar-wrap"><div class="score-bar stc-bar" style="width:58%"></div></div><span class="score-num stc">58</span></div>
+    <div class="finding">Sage LLM deployed in Stewart Valuation Intelligence — proprietary model with RAG over client procedures and order data. VU Explorer (March 2026) adds AI search to 30-year knowledge base. Strong governance language in 10-K. Risk: 10-K explicitly warns of AI regulatory uncertainty as a material risk. Acquisition velocity (MCS, NAN) suggests capability buying over capability building — MOC BIL flag: SIGNAL CONDITIONAL — discovery depth unconfirmed.</div>
+    <span class="verdict verdict-stc">Verdict: Maturing — governance posture strong, workflow AI depth low</span>
+  </div>
+</div>
+
+<hr class="divider">
+<p class="section-label">AI ROI roadmap — what has each company actually returned?</p>
+
+<div class="two-col">
+  <div class="card">
+    <div class="card-head">
+      <span class="badge badge-sl">ServiceLink</span>
+      <span class="card-title" style="font-size:13px">ROI Index: 74</span>
+    </div>
+    <div class="three-col" style="margin:8px 0 10px">
+      <div class="mini-card"><div class="mc-label">Cycle compression</div><div class="mc-val">Days → seconds</div></div>
+      <div class="mini-card"><div class="mc-label">Lender NPS lift</div><div class="mc-val">76–87% preference</div></div>
+      <div class="mini-card"><div class="mc-label">Closing flexibility</div><div class="mc-val">3 modalities live</div></div>
+    </div>
+    <div class="finding">EXOS Close: real-time notary network access, remote eligibility determination in-platform, instant scheduling. 2025 State of Homebuying Report: 87% of buyers prefer lenders with EXOS-style scheduling (91% Millennials/Gen X). FNF Q1 2026: "productivity gains through automation and data at scale are a key reason we continue to deliver industry-leading margins." ROI is partially verified at the FNF parent level — direct ServiceLink margin contribution is not disaggregated in public filings. INFERRED-PUBLIC: ROI is cycle-time and client retention driven, not yet quantified in standalone dollar terms.</div>
+  </div>
+  <div class="card">
+    <div class="card-head">
+      <span class="badge badge-stc">Stewart (STC)</span>
+      <span class="card-title" style="font-size:13px">ROI Index: 58</span>
+    </div>
+    <div class="three-col" style="margin:8px 0 10px">
+      <div class="mini-card"><div class="mc-label">Q4 2025 revenue</div><div class="mc-val">+19.6% YoY</div></div>
+      <div class="mini-card"><div class="mc-label">Commercial fee/file</div><div class="mc-val">$21K avg (+35%)</div></div>
+      <div class="mini-card"><div class="mc-label">Sage deployment</div><div class="mc-val">SVI operational</div></div>
+    </div>
+    <div class="finding">Stewart's Q1 2026 beat was driven by commercial sector strength and acquisition momentum, not attributable to AI in isolation. VU Explorer and Sage are operational but described in governance/support terms — "right seat expert," not a revenue driver announcement. SimplyWallSt notes AI investments as "partially relevant" to Q1 beat. $4.1B revenue target by 2029 requires 9.6% CAGR — AI ROI is a supporting bet, not yet a confirmed accelerant. HYPOTHESIS — UNCONFIRMED: standalone AI ROI not publicly disaggregated.</div>
+  </div>
+</div>
+
+<hr class="divider">
+<p class="section-label">FAANG Score — Amazon as the delta benchmark (MOC AWSS v1.1)</p>
+
+<div class="winner-row">
+  <span class="winner-badge">Amazon Delta Winner: ServiceLink / FNF</span>
+  <span class="win-sub" style="font-size:12px">Closer to Amazon's data-first, workflow-embedded AI operating model</span>
+</div>
+
+<div class="faang-row">
+  <div class="faang-card">
+    <div class="card-head" style="margin-bottom:8px"><span class="badge badge-sl">ServiceLink / FNF</span><span style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-left:4px">FAANG Score: 68 / 100</span></div>
+    <div class="faang-dim"><span class="dim-name">Data at scale</span><div class="bar-w"><div class="bar-f sl-bar" style="width:78%"></div></div><span class="dim-score sl" style="color:#534AB7">78</span></div>
+    <div class="faang-dim"><span class="dim-name">Workflow embedding</span><div class="bar-w"><div class="bar-f sl-bar" style="width:80%"></div></div><span class="dim-score sl" style="color:#534AB7">80</span></div>
+    <div class="faang-dim"><span class="dim-name">Platform proprietary</span><div class="bar-w"><div class="bar-f sl-bar" style="width:75%"></div></div><span class="dim-score sl" style="color:#534AB7">75</span></div>
+    <div class="faang-dim"><span class="dim-name">Decision latency</span><div class="bar-w"><div class="bar-f sl-bar" style="width:72%"></div></div><span class="dim-score sl" style="color:#534AB7">72</span></div>
+    <div class="faang-dim"><span class="dim-name">Agent / automation</span><div class="bar-w"><div class="bar-f sl-bar" style="width:60%"></div></div><span class="dim-score sl" style="color:#534AB7">60</span></div>
+    <div class="faang-dim"><span class="dim-name">AI governance</span><div class="bar-w"><div class="bar-f sl-bar" style="width:55%"></div></div><span class="dim-score sl" style="color:#534AB7">55</span></div>
+    <div class="amazon-delta">Amazon gap: FNF operates at a data-infrastructure-first cadence that mirrors AWS's embedded automation model. EXOS resembles an Amazon product decision — own the platform, not just the service. Gap exists at the agentic layer (no public multi-agent orchestration disclosure) and on governance formality. Azure substrate is a cloud dependency misalignment — Amazon would own the infra.</div>
+  </div>
+  <div class="faang-card">
+    <div class="card-head" style="margin-bottom:8px"><span class="badge badge-stc">Stewart (STC)</span><span style="font-size:13px;font-weight:500;color:var(--color-text-primary);margin-left:4px">FAANG Score: 54 / 100</span></div>
+    <div class="faang-dim"><span class="dim-name">Data at scale</span><div class="bar-w"><div class="bar-f stc-bar" style="width:60%"></div></div><span class="dim-score stc" style="color:#1D9E75">60</span></div>
+    <div class="faang-dim"><span class="dim-name">Workflow embedding</span><div class="bar-w"><div class="bar-f stc-bar" style="width:50%"></div></div><span class="dim-score stc" style="color:#1D9E75">50</span></div>
+    <div class="faang-dim"><span class="dim-name">Platform proprietary</span><div class="bar-w"><div class="bar-f stc-bar" style="width:62%"></div></div><span class="dim-score stc" style="color:#1D9E75">62</span></div>
+    <div class="faang-dim"><span class="dim-name">Decision latency</span><div class="bar-w"><div class="bar-f stc-bar" style="width:50%"></div></div><span class="dim-score stc" style="color:#1D9E75">50</span></div>
+    <div class="faang-dim"><span class="dim-name">Agent / automation</span><div class="bar-w"><div class="bar-f stc-bar" style="width:48%"></div></div><span class="dim-score stc" style="color:#1D9E75">48</span></div>
+    <div class="faang-dim"><span class="dim-name">AI governance</span><div class="bar-w"><div class="bar-f stc-bar" style="width:68%"></div></div><span class="dim-score stc" style="color:#1D9E75">68</span></div>
+    <div class="amazon-delta">Amazon gap: Stewart's AI story is knowledge-layer (VU Explorer, Sage) — assistive intelligence sitting on top of existing workflows, not redesigning them from the data substrate up. This is not an Amazon operating pattern. Amazon builds the system so AI is the default path, not an option. Stewart's acquisition-led growth is more Berkshire than Bezos. Governance posture is Stewart's closest Amazon alignment — but governance without workflow redesign is defensive, not offensive.</div>
+  </div>
+</div>
+
+<hr class="divider">
+<p class="section-label">Conard Layer — FinServ Presales Presales Verdict</p>
+
+<div class="conard-block">
+  <div class="conard-verdict">Conard Layer Verdict: SHIP WITH CONTROLS — ServiceLink | HOLD — Stewart</div>
+  <div class="conard-text"><strong>ServiceLink:</strong> EXOS platform demonstrates client trust, cycle-time compression, API readiness, and compliance posture (ICE EPC Platinum, UAD 3.6, RESPA-aligned workflows). Ship condition met. Control required: standalone AI governance framework must be formalized at the ServiceLink entity level before enterprise lender audit cycles. Evidence: FNF Q1 2026 filing confirms AI as a margin driver — client trust gate cleared.</div>
+  <div class="conard-text" style="margin-top:6px"><strong>Stewart:</strong> Sage and VU Explorer are operational but positioned as support tools. 10-K explicitly flags AI regulatory uncertainty as a material risk — compliance gate is open. Acquisition velocity (MCS, NAN) raises Conard BA Acceptance concern: field-level data quality and API handshake readiness for newly acquired assets are not yet confirmed. Hold until Sage deployment scope and NAN integration compliance posture are documented.</div>
+</div>
+
+<div class="footer-note">
+Claim tags per MOC ESIL v1.0: FNF Q1 2026 AI margin citation [PUBLIC-VERIFIED]. EXOS cycle-time compression [PUBLIC-VERIFIED]. Stewart Sage deployment [PUBLIC-VERIFIED]. FAANG dimension scores [INFERRED-PUBLIC — derived from public signals, not disclosed metrics]. Standalone AI ROI for either entity [HYPOTHESIS — UNCONFIRMED — not disaggregated in public filings]. Section confidence: Moderate on ROI quantification (majority of underlying claims score below 75/100 — most probable interpretation, not a verified finding). McDonald (2026) | Epoch Frameworks LLC | DACR License v2.6.
+</div>
+
+</div>
