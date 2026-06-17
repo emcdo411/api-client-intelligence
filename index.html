@@ -1,874 +1,903 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ServiceLink vs Stewart | EXOS API Client Intelligence</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
-<style>
-:root {
-  --navy:#07111f; --navy2:#0b2545; --blue:#1a5276; --accent:#2e86ab;
-  --purple:#534AB7; --green:#1D9E75; --orange:#E67E22; --gold:#ba7517;
-  --red:#a32d2d; --ink:#101828; --muted:#667085; --line:#d9e1ea;
-  --paper:#f6f8fb; --white:#ffffff; --ice:#e8f4f8;
-  --shadow:0 24px 80px rgba(7,17,31,.16); --soft:0 12px 35px rgba(7,17,31,.09);
-}
-* { box-sizing:border-box; } html { scroll-behavior:smooth; }
-body { margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif; color:var(--ink); background:linear-gradient(180deg,#f8fafc 0%,#eef4f8 100%); }
-a { color:inherit; text-decoration:none; }
-.wrap { max-width:1180px; margin:0 auto; padding:0 22px; }
-.topline { position:sticky; top:0; z-index:50; backdrop-filter:blur(16px); background:rgba(255,255,255,.84); border-bottom:1px solid rgba(11,37,69,.08); }
-.nav { display:flex; align-items:center; justify-content:space-between; padding:14px 22px; }
-.brand { display:flex; align-items:center; gap:12px; font-weight:900; letter-spacing:.02em; }
-.brandmark { width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,var(--navy),var(--purple)); box-shadow:0 8px 26px rgba(83,74,183,.35); }
-.navlinks { display:flex; gap:18px; color:var(--muted); font-size:13px; font-weight:800; }
-.hero { position:relative; overflow:hidden; background:radial-gradient(circle at 20% 10%,rgba(83,74,183,.34),transparent 34%),linear-gradient(135deg,#07111f 0%,#0b2545 48%,#2b225f 100%); color:white; }
-.hero:before { content:""; position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.055) 1px,transparent 1px); background-size:44px 44px; mask-image:linear-gradient(180deg,#000,transparent 92%); }
-.hero-inner { position:relative; max-width:1180px; margin:0 auto; padding:78px 22px 64px; display:grid; grid-template-columns:1.1fr .9fr; gap:46px; align-items:center; }
-.kicker { display:inline-flex; gap:8px; align-items:center; padding:8px 12px; border:1px solid rgba(255,255,255,.18); border-radius:999px; color:#e8e5ff; background:rgba(255,255,255,.08); font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.12em; }
-.pulse { width:8px; height:8px; border-radius:50%; background:var(--green); box-shadow:0 0 0 6px rgba(29,158,117,.18); }
-h1 { font-family:'DM Serif Display',serif; font-size:clamp(44px,7vw,84px); line-height:.94; margin:18px 0; font-weight:400; letter-spacing:-.04em; }
-.hero p { color:#dbe8ef; font-size:18px; line-height:1.65; margin:0; max-width:730px; }
-.hero-actions { display:flex; gap:14px; margin-top:28px; flex-wrap:wrap; }
-.btn { display:inline-flex; align-items:center; gap:10px; border-radius:999px; padding:13px 18px; font-weight:900; font-size:13px; border:1px solid rgba(255,255,255,.2); }
-.btn.primary { background:white; color:var(--navy); } .btn.ghost { color:white; background:rgba(255,255,255,.08); }
-.command-card { border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.08); border-radius:28px; padding:22px; box-shadow:var(--shadow); backdrop-filter:blur(10px); }
-.terminal { background:#06101b; border-radius:20px; padding:20px; border:1px solid rgba(255,255,255,.12); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; color:#c9f3ff; line-height:1.8; }
-.cmd-line { display:block; } .good { color:#7ee0bd; } .warn { color:#ffd68a; } .bad { color:#ff9e9e; } .blue { color:#8bd7ff; }
-.section { max-width:1180px; margin:0 auto; padding:72px 22px; }
-.eyebrow { color:var(--accent); font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.16em; }
-h2 { font-size:clamp(30px,4vw,52px); line-height:1; margin:8px 0 14px; letter-spacing:-.04em; }
-h3 { font-size:22px; margin:0 0 12px; letter-spacing:-.02em; }
-.lede { color:var(--muted); max-width:820px; line-height:1.7; font-size:16px; }
-.grid4 { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; } .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; } .two { display:grid; grid-template-columns:1fr 1fr; gap:22px; align-items:start; }
-.metric,.panel,.chart-card { background:white; border:1px solid var(--line); border-radius:24px; box-shadow:var(--soft); }
-.metric { padding:22px; position:relative; overflow:hidden; } .metric:after { content:""; position:absolute; right:-35px; top:-35px; width:110px; height:110px; border-radius:50%; background:rgba(83,74,183,.10); }
-.metric-label { color:var(--muted); font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.08em; } .metric-value { font-size:42px; font-weight:900; letter-spacing:-.05em; margin:8px 0; } .metric-note { color:var(--purple); font-weight:900; font-size:13px; } .metric-desc { color:var(--muted); font-size:13px; margin-top:12px; line-height:1.55; }
-.panel { padding:28px; } .panel.dark { background:linear-gradient(135deg,#07111f,#102b43); color:white; border:0; } .panel.dark .lede,.panel.dark p { color:#dcebf3; }
-.badge { display:inline-flex; align-items:center; border-radius:999px; padding:7px 10px; font-weight:900; font-size:11px; letter-spacing:.08em; text-transform:uppercase; margin:2px 4px 8px 0; }
-.badge.purple { background:#ecebff; color:#332a9c; } .badge.green { background:#e1f5ee; color:#08704f; } .badge.orange { background:#fff0dd; color:#8d4b00; } .badge.red { background:#f8e4e4; color:var(--red); }
-.chart-card { overflow:hidden; margin-top:18px; } .chart-head { padding:22px 24px; border-bottom:1px solid var(--line); display:flex; gap:14px; align-items:flex-start; } .chart-index { width:42px; height:42px; border-radius:14px; background:#07111f; color:white; display:grid; place-items:center; font-weight:900; flex:none; } .chart-body { padding:14px; background:white; }
-.arch { white-space:pre; overflow:auto; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; background:#06101b; color:#d7f3ff; border-radius:22px; padding:24px; font-size:12px; line-height:1.45; border:1px solid rgba(255,255,255,.1); }
-.table-wrap { overflow:auto; margin:18px 0; border:1px solid var(--line); border-radius:18px; background:white; } table { width:100%; border-collapse:collapse; font-size:13px; } th { text-align:left; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.08em; padding:12px 10px; border-bottom:1px solid var(--line); } td { padding:13px 10px; border-bottom:1px solid #edf1f5; vertical-align:top; }
-.output { background:#fff; border:1px solid var(--line); border-radius:30px; padding:32px; box-shadow:var(--soft); } .output p { color:#344054; line-height:1.7; } .output blockquote { margin:22px 0; padding:18px 20px; border-left:5px solid var(--purple); background:#f6f4ff; border-radius:16px; color:#1f2340; font-size:17px; line-height:1.65; } .output h2 { margin-top:44px; } .output h3 { margin-top:26px; }
-.callout { border-left:5px solid var(--purple); background:#f6f4ff; padding:18px 20px; border-radius:18px; color:#234; line-height:1.65; }
-.footer { background:#07111f; color:#d7e7ef; padding:44px 22px; } .footer-inner { max-width:1180px; margin:0 auto; display:flex; justify-content:space-between; gap:28px; flex-wrap:wrap; } .small { color:#8ea4b5; font-size:12px; line-height:1.65; }
-@media (max-width:900px) { .hero-inner,.two { grid-template-columns:1fr; } .grid4,.grid3 { grid-template-columns:1fr; } .navlinks { display:none; } }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="EXOS Title API Client Intelligence executive site built from the api-client-intelligence repository." />
+  <title>EXOS Title API Client Intelligence | Conard Layer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --paper: #fbfaf7;
+      --paper-2: #f3f0e7;
+      --ink: #0d1117;
+      --muted: #667085;
+      --line: #e5e1d7;
+      --navy: #0b2545;
+      --navy-2: #111827;
+      --blue: #1a5276;
+      --accent: #2e86ab;
+      --gold: #d9a441;
+      --gold-2: #ba7517;
+      --green: #1d9e75;
+      --red: #a32d2d;
+      --card: #ffffff;
+    
+  --color-text-primary: var(--ink); --color-text-secondary: var(--muted); --color-background-primary: var(--white); --color-background-secondary: var(--paper); --color-border-tertiary: var(--line); --border-radius-lg: 18px; --border-radius-md: 14px; --font-mono: ui-monospace,SFMono-Regular,Menlo,monospace;
+  --shadow: 0 24px 80px rgba(17, 24, 39, 0.12);
+      --soft-shadow: 0 12px 34px rgba(17, 24, 39, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(217,164,65,0.22) 0%, transparent 32%),
+        radial-gradient(circle at top right, rgba(46,134,171,0.16) 0%, transparent 30%),
+        linear-gradient(135deg, var(--paper) 0%, var(--paper-2) 100%);
+      color: var(--ink);
+      line-height: 1.5;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .wrap {
+      width: min(1180px, calc(100% - 48px));
+      margin: 0 auto;
+    }
+
+    .nav-shell {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(251,250,247,0.82);
+      border-bottom: 1px solid rgba(17,24,39,0.08);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav {
+      height: 66px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--navy), var(--accent));
+      box-shadow: 0 10px 22px rgba(11,37,69,0.24);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      font-size: 14px;
+      color: #4b5563;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .hero {
+      min-height: 82vh;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 52px;
+      align-items: center;
+      padding: 78px 0 56px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--gold-2);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 28px;
+      height: 2px;
+      background: var(--gold-2);
+    }
+
+    .hero h1 {
+      font-family: "DM Serif Display", Georgia, serif;
+      font-size: clamp(50px, 7.4vw, 92px);
+      line-height: 0.92;
+      letter-spacing: -0.05em;
+      margin: 18px 0 22px;
+      max-width: 780px;
+    }
+
+    .hero .lead {
+      color: #374151;
+      font-size: 20px;
+      max-width: 720px;
+    }
+
+    .actions {
+      margin-top: 30px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--navy-2);
+      border-radius: 999px;
+      padding: 13px 18px;
+      background: var(--navy-2);
+      color: white;
+      text-decoration: none;
+      font-weight: 900;
+      box-shadow: 0 12px 28px rgba(17,24,39,0.18);
+    }
+
+    .btn.secondary {
+      background: transparent;
+      color: var(--navy-2);
+      box-shadow: none;
+    }
+
+    .hero-card {
+      position: relative;
+      overflow: hidden;
+      background: #0d1728;
+      color: white;
+      border-radius: 32px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: -30%;
+      background: linear-gradient(120deg, transparent, rgba(217,164,65,0.28), transparent);
+      transform: rotate(18deg);
+    }
+
+    .hero-card-inner {
+      position: relative;
+      z-index: 2;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.14);
+      padding-bottom: 18px;
+      margin-bottom: 20px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(29,158,117,0.14);
+      color: #9cf2cc;
+      font-weight: 900;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #1d9e75;
+      box-shadow: 0 0 0 7px rgba(29,158,117,0.16);
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .metric {
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 18px;
+      padding: 18px;
+      background: rgba(255,255,255,0.07);
+    }
+
+    .metric-label {
+      color: #cfd6e4;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+      font-size: 11px;
+    }
+
+    .metric-value {
+      font-size: 36px;
+      line-height: 1;
+      margin: 10px 0 6px;
+      font-weight: 900;
+    }
+
+    .metric-note {
+      color: #d6deeb;
+      font-size: 13px;
+    }
+
+    .section {
+      padding: 76px 0;
+    }
+
+    .section-title {
+      font-family: "DM Serif Display", Georgia, serif;
+      font-size: clamp(38px, 5vw, 56px);
+      line-height: 0.98;
+      letter-spacing: -0.04em;
+      margin: 12px 0 16px;
+      max-width: 900px;
+    }
+
+    .kicker {
+      color: var(--muted);
+      font-size: 18px;
+      max-width: 860px;
+      margin-bottom: 30px;
+    }
+
+    .badge {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 7px 11px;
+      border: 1px solid #e8d08b;
+      background: #fff7df;
+      color: #75550b;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--soft-shadow);
+    }
+
+    .panel h3 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      letter-spacing: -0.02em;
+    }
+
+    .panel p {
+      color: #374151;
+      margin: 9px 0;
+    }
+
+    .small {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .flow {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      white-space: pre;
+      overflow: auto;
+      background: #0d1117;
+      color: #d7e3ff;
+      border-radius: 24px;
+      padding: 24px;
+      line-height: 1.4;
+      box-shadow: var(--soft-shadow);
+    }
+
+    .table-shell {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th {
+      text-align: left;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    td {
+      padding: 14px 10px;
+      border-bottom: 1px solid #eeeeea;
+      vertical-align: top;
+    }
+
+    .status-instant {
+      color: var(--green);
+      font-weight: 900;
+    }
+
+    .status-review {
+      color: var(--gold-2);
+      font-weight: 900;
+    }
+
+    .status-flag {
+      color: var(--red);
+      font-weight: 900;
+    }
+
+    .charts {
+      display: grid;
+      gap: 34px;
+    }
+
+    .chart-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      padding: 26px;
+      box-shadow: var(--soft-shadow);
+    }
+
+    .chart-card h3 {
+      font-size: 26px;
+      margin-bottom: 6px;
+      letter-spacing: -0.03em;
+    }
+
+    .chart-read {
+      color: var(--muted);
+      font-style: italic;
+      margin-bottom: 18px;
+    }
+
+    .chart-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 16px;
+      background: #fbfbfa;
+    }
+
+    .caption {
+      font-size: 12px;
+      color: #737373;
+      margin-top: 12px;
+      font-style: italic;
+    }
+
+    .callout {
+      border-left: 4px solid var(--gold);
+      padding: 18px 22px;
+      background: #fff8e6;
+      border-radius: 14px;
+      margin-top: 16px;
+      color: #292524;
+      font-weight: 700;
+    }
+
+    .verdict {
+      background: #0d1728;
+      color: white;
+      border-color: rgba(255,255,255,0.1);
+    }
+
+    .verdict p,
+    .verdict li {
+      color: #d8dee9;
+    }
+
+    .verdict ul {
+      padding-left: 20px;
+      margin-top: 14px;
+    }
+
+    .footer {
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      padding: 42px 0;
+      font-size: 14px;
+    }
+
+    @media (max-width: 920px) {
+      .hero,
+      .grid-2,
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .metric-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  
+.api-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:18px; margin-top:22px; }
+.api-card { background:#fff; border:1px solid var(--line); border-radius:24px; padding:24px; box-shadow:var(--soft); }
+.api-card h3 { display:flex; align-items:center; gap:10px; }
+.api-tag { display:inline-flex; padding:6px 9px; border-radius:999px; font-size:11px; font-weight:900; letter-spacing:.06em; text-transform:uppercase; }
+.api-tag.rest { background:#eeedfe; color:#3c3489; } .api-tag.soap { background:#e1f5ee; color:#085041; } .api-tag.schema { background:#faeeda; color:#633806; } .api-tag.hold { background:#fcebeb; color:#791f1f; }
+.status-map { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:18px; }
+.status-tile { background:#fff; border:1px solid var(--line); border-radius:18px; padding:16px; box-shadow:0 8px 24px rgba(7,17,31,.05); }
+.status-code { font-family:var(--font-mono); font-size:12px; font-weight:900; color:var(--purple); }
+.blocker-list { display:grid; gap:10px; margin-top:16px; }
+.blocker { border-left:4px solid var(--red); background:#fff; border-radius:14px; padding:14px 16px; box-shadow:0 8px 24px rgba(7,17,31,.05); }
+.blocker b { color:var(--red); }
+.arch-wrap { padding: 1.5rem 0; font-size: 13px; }
+.arch-wrap .section-head { font-size: 11px; font-weight: 800; letter-spacing: 0.10em; text-transform: uppercase; color: var(--muted); margin: 0 0 10px; }
+.arch-wrap .node { background: var(--white); border: 1px solid var(--line); border-radius: 18px; padding: 16px 18px; box-shadow:0 8px 24px rgba(7,17,31,.05); }
+.arch-wrap .node-head { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.arch-wrap .dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+.dot-rest { background:#534AB7; } .dot-soap { background:#1D9E75; } .dot-schema { background:#BA7517; } .dot-comp { background:#A32D2D; } .dot-conard { background:#185FA5; }
+.arch-wrap .node-title { font-size:13px; font-weight:900; color:var(--ink); }
+.arch-wrap .node-body { font-size:12px; color:var(--muted); line-height:1.65; }
+.arch-wrap .badge-sm { font-size:10px; font-weight:900; padding:2px 7px; border-radius:999px; margin-left:auto; }
+.badge-rest { background:#EEEDFE; color:#3C3489; } .badge-soap { background:#E1F5EE; color:#085041; } .badge-schema { background:#FAEEDA; color:#633806; } .badge-comp { background:#FCEBEB; color:#791F1F; } .badge-conard { background:#E6F1FB; color:#0C447C; }
+.arch-wrap .field-row { display:flex; gap:8px; align-items:flex-start; margin:6px 0; }
+.arch-wrap .field-id { font-size:10px; font-weight:900; color:var(--muted); width:110px; flex-shrink:0; font-family:var(--font-mono); }
+.arch-wrap .field-desc { font-size:12px; color:var(--ink); line-height:1.5; }
+.arch-wrap .flow-row { display:flex; align-items:flex-start; gap:6px; margin:7px 0; font-size:12px; color:var(--ink); }
+.arch-wrap .step-badge { font-size:10px; font-weight:900; padding:2px 6px; border-radius:5px; background:var(--paper); color:var(--muted); flex-shrink:0; }
+.arch-wrap .two-col { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
+.arch-wrap .gate-row { display:flex; align-items:flex-start; gap:8px; padding:8px 0; border-bottom:1px solid var(--line); }
+.arch-wrap .gate-name { font-size:12px; font-weight:900; color:var(--ink); width:160px; flex-shrink:0; }
+.arch-wrap .gate-status { font-size:10px; font-weight:900; padding:2px 8px; border-radius:999px; flex-shrink:0; }
+.status-cond { background:#FAEEDA; color:#633806; } .status-open { background:#FCEBEB; color:#791F1F; }
+.arch-wrap .gate-note { font-size:11px; color:var(--muted); line-height:1.5; }
+@media (max-width:900px) { .api-grid,.status-map,.arch-wrap .two-col { grid-template-columns:1fr; } }
+
 </style>
 </head>
 <body>
-<header class="topline">
-<nav class="wrap nav">
-<div class="brand">
-<span class="brandmark">
-</span>
-<span>EXOS API CLIENT INTELLIGENCE</span>
-</div>
-<div class="navlinks">
-<a href="#scorecard">Scorecard</a>
-<a href="#conard">Conard Gate</a>
-<a href="#charts">Charts</a>
-<a href="#output">Output</a>
-</div>
-</nav>
-</header>
-<section class="hero">
-<div class="hero-inner">
-<div>
-<div class="kicker">
-<span class="pulse">
-</span> Updated output integrated · June 2026</div>
-<h1>ServiceLink has the stronger workflow moat. Stewart has the clearer catch-up problem.</h1>
-<p>This upgraded index keeps the EXOS API Client Intelligence operating surface and adds the new ServiceLink vs. Stewart AI Adoption Intelligence output, including scorecard, ROI roadmap, FAANG delta, and Conard Layer verdicts.</p>
-<div class="hero-actions">
-<a class="btn primary" href="#output">Read the new output</a>
-<a class="btn ghost" href="#charts">View charts</a>
-</div>
-</div>
-<div class="command-card">
-<div class="terminal">
-<span class="cmd-line blue">$ conard.compare --vendor=servicelink --competitor=stewart</span>
-<span class="cmd-line">ServiceLink AI Adoption <span class="good">72 / 100</span>
-</span>
-<span class="cmd-line">Stewart AI Adoption <span class="warn">61 / 100</span>
-</span>
-<span class="cmd-line">FAANG delta winner <span class="good">ServiceLink / FNF</span>
-</span>
-<span class="cmd-line">ServiceLink Conard verdict <span class="warn">SHIP WITH CONTROLS</span>
-</span>
-<span class="cmd-line">Stewart Conard verdict <span class="bad">HOLD</span>
-</span>
-</div>
-</div>
-</div>
-</section>
-<main>
-<section id="scorecard" class="section">
-<div class="eyebrow">01 // Executive scorecard</div>
-<h2>The new output is now part of the page.</h2>
-<p class="lede">The prior EXOS operating view stays intact, but the page now reflects the comparative intelligence brief: ServiceLink/FNF versus Stewart, workflow depth versus knowledge-layer AI, and the Amazon/FAANG operating-model gap.</p>
-<div class="grid4">
-<div class="metric">
-<div class="metric-label">ServiceLink AI</div>
-<div class="metric-value">72</div>
-<div class="metric-note">Embedded system</div>
-<div class="metric-desc">AI is inside the transaction path, not simply a feature layer.</div>
-</div>
-<div class="metric">
-<div class="metric-label">Stewart AI</div>
-<div class="metric-value">61</div>
-<div class="metric-note">Maturing</div>
-<div class="metric-desc">Real tools, but still closer to support layer than infrastructure layer.</div>
-</div>
-<div class="metric">
-<div class="metric-label">ServiceLink ROI</div>
-<div class="metric-value">74</div>
-<div class="metric-note">Margin driver</div>
-<div class="metric-desc">Automation and data scale connect more directly to cycle compression.</div>
-</div>
-<div class="metric">
-<div class="metric-label">Stewart ROI</div>
-<div class="metric-value">58</div>
-<div class="metric-note">Unconfirmed AI attribution</div>
-<div class="metric-desc">Growth is real, but AI contribution is not yet isolated.</div>
-</div>
-</div>
-</section>
-<section id="conard" class="section">
-<div class="two">
-<div class="panel dark">
-<div class="eyebrow">02 // Conard Layer</div>
-<h2>Ship with controls does not mean ship blind.</h2>
-<p>The EXOS integration case still clears the business-value threshold. Cycle-time compression is obvious, API health is strong, and client-facing value is defensible. The release story only holds when schema exceptions, legacy XML disclosure timing, and AI governance are explicitly controlled.</p>
-<div>
-<span class="badge orange">ServiceLink: ship with controls</span>
-<span class="badge red">Stewart: hold</span>
-<span class="badge green">Cycle-time gate: pass</span>
-</div>
-</div>
-<div class="panel">
-<h3>Primary competitor logic</h3>
-<p class="lede">Stewart Information Services is the direct strategic competitor because it competes for the same title, closing, valuation, and default mortgage-services wallet. FNF is ServiceLink's parent, not the external competitor.</p>
-<div class="callout">
-<strong>Bottom line:</strong> ServiceLink has the more mature AI infrastructure. Stewart is credible, but needs to move from AI-assisted knowledge tools into workflow-embedded automation.</div>
-</div>
-</div>
-</section>
-<section id="architecture" class="section">
-<div class="eyebrow">03 // Existing repo architecture preserved</div>
-<h2>The original EXOS operating architecture remains in the file.</h2>
-<p class="lede">This section keeps the repo's Conard Layer system architecture instead of replacing it with the new competitive brief.</p>
-<pre class="arch">┌─────────────────────────────────────────────────────────────────────────────┐
+  <div class="nav-shell">
+    <div class="wrap nav">
+      <div class="brand">
+        <span class="brand-mark"></span>
+        <span>EXOS Client Intelligence</span>
+      </div>
+      <nav class="nav-links">
+        <a href="#gate">Conard Gate</a>
+        <a href="#pipeline">Pipeline</a>
+        <a href="#charts">Charts</a>
+        <a href="#verdict">Verdict</a>
+      </nav>
+    </div>
+  </div>
+
+  <header class="wrap hero">
+    <section>
+      <div class="eyebrow">ServiceLink Catalyst • Technical BA Proof of Capability</div>
+      <h1>Title API trust should be visible before it becomes a lender problem.</h1>
+      <p class="lead">
+        A browser-native executive dashboard built from the api-client-intelligence repository. It translates EXOS client onboarding, schema fidelity, compliance posture, API health, and cycle-time compression into one operating view.
+      </p>
+      <div class="actions">
+        <a class="btn" href="#charts">View analytical layer</a>
+        <a class="btn secondary" href="#verdict">Read ship verdict</a>
+      </div>
+    </section>
+
+    <aside class="hero-card">
+      <div class="hero-card-inner">
+        <div class="status-row">
+          <div>
+            <div class="eyebrow">Live integration feed</div>
+            <h2>CONARD LAYER</h2>
+          </div>
+          <div class="status-pill"><span class="status-dot"></span>Ship with controls</div>
+        </div>
+        <div class="metric-grid">
+          <div class="metric">
+            <div class="metric-label">Active API clients</div>
+            <div class="metric-value">47</div>
+            <div class="metric-note">+6 this quarter</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Instant title decisions</div>
+            <div class="metric-value">91%</div>
+            <div class="metric-note">vs 74% industry avg</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Avg decisioning time</div>
+            <div class="metric-value">4.2s</div>
+            <div class="metric-note">vs 3.1 day manual baseline</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Compliance events</div>
+            <div class="metric-value">2</div>
+            <div class="metric-note">2 field-level flags</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </header>
+
+  <main>
+    <section id="gate" class="wrap section">
+      <span class="badge">Primary diagnostic gate</span>
+      <h2 class="section-title">Can the API produce what the lender needs, and can the gap be governed?</h2>
+      <p class="kicker">
+        The Conard Layer fires before any dashboard data is trusted. It asks three production-readiness questions a Client Integrations BA has to own.
+      </p>
+      <div class="grid-3">
+        <article class="panel">
+          <h3>Gate 1 — API contract fidelity</h3>
+          <p>What is the lender's expected field-level schema, latency, and data format?</p>
+          <p class="small">Risk if unanswered: schema mismatch causes silent data corruption downstream.</p>
+        </article>
+        <article class="panel">
+          <h3>Gate 2 — Compliance boundary</h3>
+          <p>Where does RESPA/TILA exposure live in this workflow?</p>
+          <p class="small">Risk if unanswered: a field-level error is not a bug. It is a compliance event.</p>
+        </article>
+        <article class="panel">
+          <h3>Gate 3 — Cycle-time delta</h3>
+          <p>What measurable reduction in title decisioning time does this integration produce?</p>
+          <p class="small">Risk if unanswered: there is no business case to defend in a lender review.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="wrap section">
+      <span class="badge">Operating architecture</span>
+      <h2 class="section-title">The repository is not just a dashboard. It is a release-readiness operating model.</h2>
+      <p class="kicker">The page below keeps the layered architecture visible, because that is the executive energy of the artifact.</p>
+      <pre class="flow">┌─────────────────────────────────────────────────────────────────────────────┐
 │                    EXOS TITLE API CLIENT INTELLIGENCE                        │
-│              Catalyst Technology &amp; Platform Services - Onboarding View       │
+│              Catalyst Technology & Platform Services -- Onboarding View      │
 └─────────────────────────────────────────────────────────────────────────────┘
-┌──────────────────────────────────────────────────────────────────────────────┐
-│  LAYER 0 - CONARD LAYER GATE                                                 │
-│  INPUT: lender API handshake metadata + schema contract + order payload       │
-│                                                                              │
-│  Gate 1: API Schema Fidelity - MISMO 3.4                                      │
-│  Gate 2: Compliance Boundary Audit - RESPA/TILA/CFPB                          │
-│  Gate 3: Cycle-Time Delta - EXOS vs manual baseline                           │
-│                                                                              │
-│  VERDICT: SHIP / SHIP WITH CONTROLS / HOLD                                    │
-└──────────────────────────────────┬───────────────────────────────────────────┘
-                                   ▼
-┌──────────────────────────────────────────────────────────────────────────────┐
-│  LAYER 1 - LENDER INTEGRATION INTAKE                                          │
-│  Cloudvirga, ICE Encompass, Optimal Blue/ULDD, SimpleNexus/nCino, LoanServ    │
-│  OAuth 2.0, MISMO 3.4 validation, field-level contract checks, &lt;5s target      │
-└──────────────────────────────────┬───────────────────────────────────────────┘
-                                   ▼
-┌──────────────────────────────────────────────────────────────────────────────┐
-│  LAYER 2 - EXOS API EXECUTION SURFACE                                         │
-│  POST /v3/title/instant-decision    3.8s   99.97%  GREEN                      │
-│  GET  /v3/order/{id}/status         0.4s   99.99%  GREEN                      │
-│  POST /v3/lien/search               8.1s   99.81%  AMBER                      │
-│  POST /v3/image/extract             2.1s   99.94%  GREEN                      │
-│  POST /v3/default/portfolio         1.2s   99.96%  GREEN                      │
-└──────────────────────────────────┬───────────────────────────────────────────┘
-                                   ▼
-┌──────────────────────────────────────────────────────────────────────────────┐
-│  LAYER 3 - ORDER PIPELINE STATE MACHINE                                       │
-│  ORDER RECEIVED -&gt; schema/auth/loan type -&gt; instant decisioning engine        │
-│  Outcomes: INSTANT DECISION, MANUAL REVIEW, COMPLIANCE FLAG                   │
-│  Instant title issued: 91% of volume                                          │
-└──────────────────────────────────┬───────────────────────────────────────────┘
-                                   ▼
-┌──────────────────────────────────────────────────────────────────────────────┐
-│  LAYER 4 - COMPLIANCE GOVERNANCE SURFACE                                      │
-│  RESPA data integrity PASS: 45/47 clients MISMO 3.4 validated                 │
-│  TILA disclosure timing WARN: 2 legacy XML clients patch scoped               │
-│  CFPB audit trail PASS: immutable event timestamps per order                  │
-│  ML model governance PASS: confidence scores + human override log             │
-│  Open gaps: SettlementChargeType node, PropertyIdentifier array               │
-└──────────────────────────────────────────────────────────────────────────────┘</pre>
+
+LAYER 0  CONARD GATE
+         API schema fidelity → Compliance boundary → Cycle-time delta
+
+LAYER 1  LENDER INTEGRATION INTAKE
+         Cloudvirga • ICE Encompass • Optimal Blue • ULDD • SimpleNexus • nCino • FISERV
+
+LAYER 2  EXOS API EXECUTION SURFACE
+         Instant decision • Order status • Lien search • Image extract • Default portfolio
+
+LAYER 3  ORDER PIPELINE STATE MACHINE
+         Instant decision • Manual review • Pending intake • Compliance flag
+
+LAYER 4  COMPLIANCE GOVERNANCE SURFACE
+         RESPA data integrity • TILA disclosure timing • CFPB audit trail • ML governance
+
+LAYER 5  FRED-STYLE ANALYTICAL VISUALIZATION
+         Cycle-time compression • Order pipeline risk • API and compliance readiness</pre>
+    </section>
+
+    <section id="pipeline" class="wrap section">
+      <span class="badge">Client integration feed</span>
+      <h2 class="section-title">Four order states show why uptime alone is not client trust.</h2>
+      <p class="kicker">The repository data shows one clean instant decision, one manual review, one pending intake, and one compliance flag.</p>
+      <div class="panel table-shell">
+        <table>
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Partner</th>
+              <th>Status</th>
+              <th>Schema</th>
+              <th>Latency</th>
+              <th>Signal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>TOR-2206-0184</td>
+              <td>Cloudvirga / ICE Encompass</td>
+              <td class="status-instant">Instant decision</td>
+              <td>MISMO 3.4</td>
+              <td>3.8s</td>
+              <td>Complete — title commitment issued.</td>
+            </tr>
+            <tr>
+              <td>TOR-2206-0191</td>
+              <td>Optimal Blue / ULDD feed</td>
+              <td class="status-review">Manual review</td>
+              <td>MISMO 3.4 — partial</td>
+              <td>14.2s</td>
+              <td>Held at lien search — schema field mismatch.</td>
+            </tr>
+            <tr>
+              <td>TOR-2206-0197</td>
+              <td>SimpleNexus / nCino</td>
+              <td class="status-review">Pending intake</td>
+              <td>Awaiting handshake</td>
+              <td>—</td>
+              <td>OAuth token handshake in progress.</td>
+            </tr>
+            <tr>
+              <td>TOR-2206-0178</td>
+              <td>FISERV LoanServ / default</td>
+              <td class="status-flag">Compliance flag</td>
+              <td>Legacy XML</td>
+              <td>Timed out</td>
+              <td>RESPA field integrity flag — escalated.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="wrap section">
+      <div class="grid-2">
+        <article class="panel">
+          <h3>Compliance posture — Conard Gate 2</h3>
+          <p><strong>RESPA data integrity:</strong> 45 of 47 clients are passing MISMO 3.4 validation.</p>
+          <p><strong>TILA disclosure timing:</strong> two legacy XML clients are not triggering the LE disclosure window correctly.</p>
+          <p><strong>CFPB audit trail:</strong> full event log retained per transaction with immutable timestamps.</p>
+          <p><strong>ML model governance:</strong> AI decisioning outputs include confidence scores and human override logs.</p>
+        </article>
+        <article class="panel">
+          <h3>Governance gap log — open items</h3>
+          <p><strong>TOR-2206-0178:</strong> FISERV legacy XML is missing the required SettlementChargeType node on loan modification workflows.</p>
+          <p><strong>TOR-2206-0191:</strong> Optimal Blue is delivering partial MISMO 3.4 payload with PropertyIdentifier truncated after the first record.</p>
+          <div class="callout">The real question is not whether the integration works. The real question is whether the client can trust what it produces.</div>
+        </article>
+      </div>
+    </section>
+
+    <section id="charts" class="wrap section">
+      <span class="badge">FRED-style analytical layer</span>
+      <h2 class="section-title">Three charts built from the repository's EXOS data.</h2>
+      <p class="kicker">These are embedded directly in the HTML, so they travel with the page and do not depend on external image files.</p>
+      <div class="charts">
+        <article class="chart-card">
+          <h3>CONARD-01 | Cycle-Time Compression</h3>
+          <p class="chart-read">P&L read: EXOS compresses title decisioning from days to seconds, but speed only creates value when the schema and compliance gates hold.</p>
+          <svg class="chart-svg" viewBox="0 0 1120 560" xmlns="http://www.w3.org/2000/svg">
+            <rect width="1120" height="560" fill="#fbfbfa"/>
+            <text x="76" y="42" font-size="24" font-weight="800" fill="#111">Cycle-Time Compression | EXOS vs Manual Baseline</text>
+            <text x="76" y="66" font-size="14" fill="#667085" font-style="italic">Industry baseline in hours; EXOS values compress to near-zero on the same axis.</text>
+            <line x1="80" x2="1080" y1="450" y2="450" stroke="#111" stroke-width="2"/>
+            <line x1="80" x2="80" y1="90" y2="450" stroke="#111" stroke-width="2"/>
+            <line x1="80" x2="1080" y1="450" y2="450" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="360" y2="360" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="270" y2="270" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="180" y2="180" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="90" y2="90" stroke="#ddd"/>
+            <text x="35" y="455" font-size="13">0h</text>
+            <text x="28" y="365" font-size="13">20h</text>
+            <text x="28" y="275" font-size="13">40h</text>
+            <text x="28" y="185" font-size="13">60h</text>
+            <text x="28" y="95" font-size="13">80h</text>
+            <line x1="80" x2="1080" y1="432" y2="432" stroke="#a32d2d" stroke-dasharray="8 8"/>
+            <text x="95" y="422" font-size="13" font-weight="800" fill="#a32d2d">4h management attention threshold</text>
+            <rect x="122" y="126" width="96" height="324" fill="#111827" rx="8"/>
+            <rect x="372" y="175.5" width="96" height="274.5" fill="#111827" rx="8"/>
+            <rect x="622" y="126" width="96" height="324" fill="#111827" rx="8"/>
+            <rect x="872" y="207" width="96" height="243" fill="#111827" rx="8"/>
+            <polyline points="170,443 420,442 670,441 920,440" fill="none" stroke="#d9a441" stroke-width="5"/>
+            <circle cx="170" cy="443" r="8" fill="#d9a441"/>
+            <circle cx="420" cy="442" r="8" fill="#d9a441"/>
+            <circle cx="670" cy="441" r="8" fill="#d9a441"/>
+            <circle cx="920" cy="440" r="8" fill="#d9a441"/>
+            <text x="170" y="116" text-anchor="middle" font-weight="800">72h</text>
+            <text x="420" y="166" text-anchor="middle" font-weight="800">61h</text>
+            <text x="670" y="116" text-anchor="middle" font-weight="800">72h</text>
+            <text x="920" y="198" text-anchor="middle" font-weight="800">54h</text>
+            <text x="170" y="486" text-anchor="middle">Purchase</text>
+            <text x="420" y="486" text-anchor="middle">Refinance</text>
+            <text x="670" y="486" text-anchor="middle">Default mgmt</text>
+            <text x="920" y="486" text-anchor="middle">Loan mod</text>
+            <text x="620" y="124" font-size="14" fill="#111">EXOS instant decisioning appears near-zero because seconds are tiny against a 3–5 day baseline.</text>
+          </svg>
+          <p class="caption">Repository values: purchase 72h baseline vs &lt;4 seconds; refinance 61h vs 0.004h; default 72h vs 0.07h; loan mod 54h vs 0.11h.</p>
+        </article>
+
+        <article class="chart-card">
+          <h3>CONARD-02 | Order Pipeline Risk Index</h3>
+          <p class="chart-read">P&L read: the pipeline deteriorates when schema certainty and compliance posture deteriorate.</p>
+          <svg class="chart-svg" viewBox="0 0 1120 540" xmlns="http://www.w3.org/2000/svg">
+            <rect width="1120" height="540" fill="#fbfbfa"/>
+            <text x="76" y="42" font-size="24" font-weight="800" fill="#111">Order Pipeline Risk Index | Readiness Score</text>
+            <text x="76" y="66" font-size="14" fill="#667085" font-style="italic">Derived score combines order status, schema validity, latency, and compliance posture.</text>
+            <line x1="80" x2="1080" y1="430" y2="430" stroke="#111" stroke-width="2"/>
+            <line x1="80" x2="80" y1="70" y2="430" stroke="#111" stroke-width="2"/>
+            <line x1="80" x2="1080" y1="430" y2="430" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="346" y2="346" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="262" y2="262" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="178" y2="178" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="94" y2="94" stroke="#ddd"/>
+            <text x="42" y="435">0</text>
+            <text x="35" y="351">25</text>
+            <text x="35" y="267">50</text>
+            <text x="35" y="183">75</text>
+            <text x="28" y="99">100</text>
+            <line x1="80" x2="1080" y1="161" y2="161" stroke="#1d9e75" stroke-dasharray="8 8"/>
+            <text x="95" y="151" font-size="13" font-weight="800" fill="#1d9e75">Ship-ready threshold: 80</text>
+            <line x1="80" x2="1080" y1="262" y2="262" stroke="#a32d2d" stroke-dasharray="8 8"/>
+            <text x="95" y="252" font-size="13" font-weight="800" fill="#a32d2d">Management attention threshold: 50</text>
+            <polyline points="150,94 400,195 650,245 900,346" fill="none" stroke="#111827" stroke-width="5"/>
+            <circle cx="150" cy="94" r="10" fill="#1d9e75" stroke="#fff" stroke-width="3"/>
+            <circle cx="400" cy="195" r="10" fill="#d9a441" stroke="#fff" stroke-width="3"/>
+            <circle cx="650" cy="245" r="10" fill="#d9a441" stroke="#fff" stroke-width="3"/>
+            <circle cx="900" cy="346" r="10" fill="#a32d2d" stroke="#fff" stroke-width="3"/>
+            <text x="150" y="78" text-anchor="middle" font-weight="800">100</text>
+            <text x="400" y="179" text-anchor="middle" font-weight="800">70</text>
+            <text x="650" y="229" text-anchor="middle" font-weight="800">55</text>
+            <text x="900" y="330" text-anchor="middle" font-weight="800">25</text>
+            <text x="150" y="472" text-anchor="middle">Instant decision</text>
+            <text x="400" y="472" text-anchor="middle">Pending intake</text>
+            <text x="650" y="472" text-anchor="middle">Manual review</text>
+            <text x="900" y="472" text-anchor="middle">Compliance flag</text>
+            <text x="585" y="128" font-size="14" fill="#111">Compliance-flagged orders fall below the attention threshold.</text>
+          </svg>
+          <p class="caption">Repository values: instant decision 100, pending intake 70, manual review 55, compliance flag 25.</p>
+        </article>
+
+        <article class="chart-card">
+          <h3>CONARD-03 | API & Compliance Readiness</h3>
+          <p class="chart-read">P&L read: uptime is not the same thing as release readiness. Lien search is available, but the schema exception creates client-trust risk.</p>
+          <svg class="chart-svg" viewBox="0 0 1120 540" xmlns="http://www.w3.org/2000/svg">
+            <rect width="1120" height="540" fill="#fbfbfa"/>
+            <text x="76" y="42" font-size="24" font-weight="800" fill="#111">API & Compliance Readiness | Uptime vs Trust Gate</text>
+            <text x="76" y="66" font-size="14" fill="#667085" font-style="italic">Black dashed line: uptime. Gold line: derived readiness score.</text>
+            <line x1="80" x2="1080" y1="430" y2="430" stroke="#111" stroke-width="2"/>
+            <line x1="80" x2="80" y1="70" y2="430" stroke="#111" stroke-width="2"/>
+            <line x1="80" x2="1080" y1="430" y2="430" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="370" y2="370" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="310" y2="310" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="250" y2="250" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="190" y2="190" stroke="#ddd"/>
+            <line x1="80" x2="1080" y1="130" y2="130" stroke="#ddd"/>
+            <text x="35" y="435">70</text>
+            <text x="35" y="375">75</text>
+            <text x="35" y="315">80</text>
+            <text x="35" y="255">85</text>
+            <text x="35" y="195">90</text>
+            <text x="35" y="135">95</text>
+            <line x1="80" x2="1080" y1="71" y2="71" stroke="#111827" stroke-dasharray="8 8"/>
+            <text x="95" y="96" font-size="13" font-weight="800" fill="#111827">Enterprise reliability threshold: 99.9%</text>
+            <line x1="80" x2="1080" y1="130" y2="130" stroke="#1d9e75" stroke-dasharray="8 8"/>
+            <text x="95" y="120" font-size="13" font-weight="800" fill="#1d9e75">Client-trust Conard gate: 95</text>
+            <line x1="80" x2="1080" y1="310" y2="310" stroke="#a32d2d" stroke-dasharray="8 8"/>
+            <text x="95" y="300" font-size="13" font-weight="800" fill="#a32d2d">Controlled-release floor: 80</text>
+            <polyline points="130,70 340,69 550,72 760,71 970,70" fill="none" stroke="#111827" stroke-width="4" stroke-dasharray="8 8"/>
+            <polyline points="130,94 340,82 550,358 760,142 970,118" fill="none" stroke="#d9a441" stroke-width="5"/>
+            <circle cx="130" cy="70" r="6" fill="#111827"/>
+            <circle cx="340" cy="69" r="6" fill="#111827"/>
+            <circle cx="550" cy="72" r="6" fill="#111827"/>
+            <circle cx="760" cy="71" r="6" fill="#111827"/>
+            <circle cx="970" cy="70" r="6" fill="#111827"/>
+            <circle cx="130" cy="94" r="9" fill="#d9a441" stroke="#fff" stroke-width="3"/>
+            <circle cx="340" cy="82" r="9" fill="#d9a441" stroke="#fff" stroke-width="3"/>
+            <circle cx="550" cy="358" r="9" fill="#a32d2d" stroke="#fff" stroke-width="3"/>
+            <circle cx="760" cy="142" r="9" fill="#d9a441" stroke="#fff" stroke-width="3"/>
+            <circle cx="970" cy="118" r="9" fill="#d9a441" stroke="#fff" stroke-width="3"/>
+            <text x="130" y="472" text-anchor="middle">Instant decision</text>
+            <text x="340" y="472" text-anchor="middle">Order status</text>
+            <text x="550" y="472" text-anchor="middle">Lien search</text>
+            <text x="760" y="472" text-anchor="middle">Image extract</text>
+            <text x="970" y="472" text-anchor="middle">Default portfolio</text>
+            <text x="585" y="338" font-size="14" fill="#111">The endpoint works, but schema exceptions create compliance exposure.</text>
+          </svg>
+          <p class="caption">Repository values: uptime ranges from 99.81% to 99.99%; lien search is the readiness dip because the schema exception creates compliance exposure.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="verdict" class="wrap section">
+      <article class="panel verdict">
+        <span class="badge">Conard Layer Verdict</span>
+        <h2 class="section-title">SHIP WITH CONTROLS</h2>
+        <p>The business value is real. Cycle-time compression is obvious. API health is strong across four of five endpoints.</p>
+        <p>The release story holds only if schema exceptions, LE disclosure timing for legacy XML clients, and open compliance flags are governed before reaching the lender client.</p>
+        <ul>
+          <li>Patch SettlementChargeType node validation before title commitment issuance.</li>
+          <li>Resolve PropertyIdentifier array truncation before multi-parcel lien search resumes.</li>
+          <li>Keep human override and audit trail visible to lender stakeholders.</li>
+        </ul>
+      </article>
+    </section>
+  
+<section class="section" id="api-architecture">
+  <div class="section-title"><div><div class="eyebrow">API architecture brief</div><h2>The title pull is not one API. It is a two-surface integration system.</h2><p class="lede">This upgrade adds the ServiceLink API BRD explanation: REST for modern order intake and status, SOAP for legacy MISMO/XML title flows, and a Conard Layer gate that decides whether testing can actually start.</p></div></div>
+  <div class="api-grid">
+    <article class="api-card"><h3><span class="api-tag rest">REST</span> Order intake + status</h3><p class="lede">Modern LOS platforms send JSON order objects to EXOS using HTTP POST. EXOS returns an order ID, then the client either polls status with GET or receives webhook callbacks. Completed title data returns through status payloads or document retrieval endpoints.</p><div class="table-wrap"><table><thead><tr><th>Step</th><th>Action</th><th>BRD field</th></tr></thead><tbody><tr><td>1</td><td>Client LOS sends order initiation payload to EXOS</td><td>BRD-SCOPE-02</td></tr><tr><td>2</td><td>EXOS returns 200/201 acknowledgement or 4xx validation error</td><td>BRD-SCHEMA-06</td></tr><tr><td>3</td><td>Client polls status or receives webhook callback</td><td>BRD-ERR-02</td></tr><tr><td>4</td><td>Title data returned by status payload or document endpoint</td><td>BRD-SCOPE-01</td></tr></tbody></table></div></article>
+    <article class="api-card"><h3><span class="api-tag soap">SOAP</span> Legacy schema + MISMO translation</h3><p class="lede">SOAP remains in scope because title and mortgage servicing environments still carry MISMO 2.x and proprietary XML schemas. This layer accepts older order objects, returns title commitment data in XML envelopes, and supports schema translation when the client cannot produce clean JSON.</p><div class="table-wrap"><table><thead><tr><th>Source schema</th><th>Integration path</th><th>Sprint impact</th></tr></thead><tbody><tr><td>MISMO 3.4</td><td>REST with JSON payload</td><td>Standard</td></tr><tr><td>MISMO 2.x</td><td>SOAP directly or REST with translation</td><td>+1 to 2 sprints</td></tr><tr><td>Proprietary</td><td>Custom translation layer required</td><td>+1 to 2 sprints</td></tr><tr><td>Mixed</td><td>Both surfaces may be in scope</td><td>Scoped per product line</td></tr></tbody></table></div></article>
+  </div>
 </section>
-<section id="charts" class="section">
-<div class="eyebrow">04 // Embedded analytical charts</div>
-<h2>The charts now match the updated output.</h2>
-<p class="lede">These are directly embedded SVG charts, so they do not disappear when the page is moved or zipped.</p>
-<article class="chart-card">
-<div class="chart-head">
-<div class="chart-index">01</div>
-<div>
-<h3>Scorecard comparison</h3>
-<p class="lede">AI adoption, ROI index, and FAANG score show ServiceLink ahead across every scored executive lens.</p>
-</div>
-</div>
-<div class="chart-body">
-<svg viewBox="0 0 980 420" role="img" aria-label="Executive scorecard: ServiceLink vs Stewart">
-<rect width="980" height="420" fill="#ffffff"/>
-<text x="70" y="35" font-size="24" font-weight="800" fill="#101828">Executive scorecard: ServiceLink vs Stewart</text>
-<line x1="70" y1="350" x2="910" y2="350" stroke="#d9e1ea"/>
-<line x1="70" y1="90" x2="70" y2="350" stroke="#d9e1ea"/>
-<line x1="70" y1="350.0" x2="910" y2="350.0" stroke="#edf1f5"/>
-<text x="40" y="354.0" font-size="12" fill="#667085">0</text>
-<line x1="70" y1="285.0" x2="910" y2="285.0" stroke="#edf1f5"/>
-<text x="40" y="289.0" font-size="12" fill="#667085">25</text>
-<line x1="70" y1="220.0" x2="910" y2="220.0" stroke="#edf1f5"/>
-<text x="40" y="224.0" font-size="12" fill="#667085">50</text>
-<line x1="70" y1="155.0" x2="910" y2="155.0" stroke="#edf1f5"/>
-<text x="40" y="159.0" font-size="12" fill="#667085">75</text>
-<line x1="70" y1="90.0" x2="910" y2="90.0" stroke="#edf1f5"/>
-<text x="40" y="94.0" font-size="12" fill="#667085">100</text>
-<rect x="131.6" y="162.8" width="61.6" height="187.2" rx="6" fill="#534AB7"/>
-<text x="162.4" y="154.8" font-size="13" font-weight="800" text-anchor="middle" fill="#534AB7">72</text>
-<rect x="203.2" y="191.4" width="61.6" height="158.6" rx="6" fill="#1D9E75"/>
-<text x="234.0" y="183.4" font-size="13" font-weight="800" text-anchor="middle" fill="#1D9E75">61</text>
-<text x="210.0" y="380" font-size="13" text-anchor="middle" fill="#344054">AI adoption</text>
-<rect x="411.6" y="157.6" width="61.6" height="192.4" rx="6" fill="#534AB7"/>
-<text x="442.4" y="149.6" font-size="13" font-weight="800" text-anchor="middle" fill="#534AB7">74</text>
-<rect x="483.2" y="199.2" width="61.6" height="150.8" rx="6" fill="#1D9E75"/>
-<text x="514.0" y="191.2" font-size="13" font-weight="800" text-anchor="middle" fill="#1D9E75">58</text>
-<text x="490.0" y="380" font-size="13" text-anchor="middle" fill="#344054">ROI index</text>
-<rect x="691.6" y="173.2" width="61.6" height="176.8" rx="6" fill="#534AB7"/>
-<text x="722.4" y="165.2" font-size="13" font-weight="800" text-anchor="middle" fill="#534AB7">68</text>
-<rect x="763.2" y="209.6" width="61.6" height="140.4" rx="6" fill="#1D9E75"/>
-<text x="794.0" y="201.6" font-size="13" font-weight="800" text-anchor="middle" fill="#1D9E75">54</text>
-<text x="770.0" y="380" font-size="13" text-anchor="middle" fill="#344054">FAANG score</text>
-<circle cx="700" cy="32" r="6" fill="#534AB7"/>
-<text x="714" y="37" font-size="13" fill="#344054">ServiceLink</text>
-<circle cx="820" cy="32" r="6" fill="#1D9E75"/>
-<text x="834" y="37" font-size="13" fill="#344054">Stewart</text>
-</svg>
-</div>
-</article>
-<article class="chart-card">
-<div class="chart-head">
-<div class="chart-index">02</div>
-<div>
-<h3>Conard readiness gate</h3>
-<p class="lede">ServiceLink clears the controlled-release gate. Stewart remains weaker on cycle-time proof, failure-mode evidence, and regulated-client acceptance.</p>
-</div>
-</div>
-<div class="chart-body">
-<svg viewBox="0 0 980 420" role="img" aria-label="Conard readiness by operating gate">
-<rect width="980" height="420" fill="#ffffff"/>
-<text x="70" y="35" font-size="24" font-weight="800" fill="#101828">Conard readiness by operating gate</text>
-<line x1="70" y1="350" x2="910" y2="350" stroke="#d9e1ea"/>
-<line x1="70" y1="90" x2="70" y2="350" stroke="#d9e1ea"/>
-<line x1="70" y1="350.0" x2="910" y2="350.0" stroke="#edf1f5"/>
-<text x="40" y="354.0" font-size="12" fill="#667085">0</text>
-<line x1="70" y1="285.0" x2="910" y2="285.0" stroke="#edf1f5"/>
-<text x="40" y="289.0" font-size="12" fill="#667085">25</text>
-<line x1="70" y1="220.0" x2="910" y2="220.0" stroke="#edf1f5"/>
-<text x="40" y="224.0" font-size="12" fill="#667085">50</text>
-<line x1="70" y1="155.0" x2="910" y2="155.0" stroke="#edf1f5"/>
-<text x="40" y="159.0" font-size="12" fill="#667085">75</text>
-<line x1="70" y1="90.0" x2="910" y2="90.0" stroke="#edf1f5"/>
-<text x="40" y="94.0" font-size="12" fill="#667085">100</text>
-<rect x="107.0" y="116.0" width="37.0" height="234.0" rx="6" fill="#534AB7"/>
-<text x="125.4" y="108.0" font-size="13" font-weight="800" text-anchor="middle" fill="#534AB7">90</text>
-<rect x="153.9" y="181.0" width="37.0" height="169.0" rx="6" fill="#1D9E75"/>
-<text x="172.4" y="173.0" font-size="13" font-weight="800" text-anchor="middle" fill="#1D9E75">65</text>
-<text x="154.0" y="380" font-size="13" text-anchor="middle" fill="#344054">Client trust</text>
-<rect x="275.0" y="121.2" width="37.0" height="228.8" rx="6" fill="#534AB7"/>
-<text x="293.4" y="113.2" font-size="13" font-weight="800" text-anchor="middle" fill="#534AB7">88</text>
-<rect x="321.9" y="214.8" width="37.0" height="135.2" rx="6" fill="#1D9E75"/>
-<text x="340.4" y="206.8" font-size="13" font-weight="800" text-anchor="middle" fill="#1D9E75">52</text>
-<text x="322.0" y="380" font-size="13" text-anchor="middle" fill="#344054">Compliance</text>
-<rect x="443.0" y="103.0" width="37.0" height="247.0" rx="6" fill="#534AB7"/>
-<text x="461.4" y="95.0" font-size="13" font-weight="800" text-anchor="middle" fill="#534AB7">95</text>
-<rect x="489.9" y="220.0" width="37.0" height="130.0" rx="6" fill="#1D9E75"/>
-<text x="508.4" y="212.0" font-size="13" font-weight="800" text-anchor="middle" fill="#1D9E75">50</text>
-<text x="490.0" y="380" font-size="13" text-anchor="middle" fill="#344054">Cycle time</text>
-<rect x="611.0" y="168.0" width="37.0" height="182.0" rx="6" fill="#534AB7"/>
-<text x="629.4" y="160.0" font-size="13" font-weight="800" text-anchor="middle" fill="#534AB7">70</text>
-<rect x="657.9" y="233.0" width="37.0" height="117.0" rx="6" fill="#1D9E75"/>
-<text x="676.4" y="225.0" font-size="13" font-weight="800" text-anchor="middle" fill="#1D9E75">45</text>
-<text x="658.0" y="380" font-size="13" text-anchor="middle" fill="#344054">Failure mode</text>
-<rect x="779.0" y="118.6" width="37.0" height="231.4" rx="6" fill="#534AB7"/>
-<text x="797.4" y="110.6" font-size="13" font-weight="800" text-anchor="middle" fill="#534AB7">89</text>
-<rect x="825.9" y="188.8" width="37.0" height="161.2" rx="6" fill="#1D9E75"/>
-<text x="844.4" y="180.8" font-size="13" font-weight="800" text-anchor="middle" fill="#1D9E75">62</text>
-<text x="826.0" y="380" font-size="13" text-anchor="middle" fill="#344054">BA acceptance</text>
-<circle cx="700" cy="32" r="6" fill="#534AB7"/>
-<text x="714" y="37" font-size="13" fill="#344054">ServiceLink</text>
-<circle cx="820" cy="32" r="6" fill="#1D9E75"/>
-<text x="834" y="37" font-size="13" fill="#344054">Stewart</text>
-</svg>
-</div>
-</article>
-<article class="chart-card">
-<div class="chart-head">
-<div class="chart-index">03</div>
-<div>
-<h3>EXOS cycle compression</h3>
-<p class="lede">The repo's original operating thesis remains visible: EXOS makes title decisioning time collapse toward the floor compared with manual baselines.</p>
-</div>
-</div>
-<div class="chart-body">
-<svg viewBox="0 0 980 420" role="img" aria-label="EXOS cycle compression vs manual baseline">
-<rect width="980" height="420" fill="#ffffff"/>
-<text x="70" y="35" font-size="24" font-weight="800" fill="#101828">EXOS cycle compression vs manual baseline</text>
-<line x1="70" y1="350" x2="910" y2="350" stroke="#d9e1ea"/>
-<line x1="70" y1="90" x2="70" y2="350" stroke="#d9e1ea"/>
-<line x1="70" y1="350.0" x2="910" y2="350.0" stroke="#edf1f5"/>
-<text x="40" y="354.0" font-size="12" fill="#667085">0</text>
-<line x1="70" y1="268.8" x2="910" y2="268.8" stroke="#edf1f5"/>
-<text x="40" y="272.8" font-size="12" fill="#667085">25</text>
-<line x1="70" y1="187.5" x2="910" y2="187.5" stroke="#edf1f5"/>
-<text x="40" y="191.5" font-size="12" fill="#667085">50</text>
-<line x1="70" y1="106.2" x2="910" y2="106.2" stroke="#edf1f5"/>
-<text x="40" y="110.2" font-size="12" fill="#667085">75</text>
-<line x1="70" y1="25.0" x2="910" y2="25.0" stroke="#edf1f5"/>
-<text x="40" y="29.0" font-size="12" fill="#667085">100</text>
-<rect x="116.2" y="116.0" width="46.2" height="234.0" rx="6" fill="#534AB7"/>
-<text x="139.3" y="108.0" font-size="13" font-weight="800" text-anchor="middle" fill="#534AB7">72</text>
-<rect x="172.4" y="350.0" width="46.2" height="0.0" rx="6" fill="#1D9E75"/>
-<text x="195.5" y="342.0" font-size="13" font-weight="800" text-anchor="middle" fill="#1D9E75">0.0011</text>
-<text x="175.0" y="380" font-size="13" text-anchor="middle" fill="#344054">Purchase</text>
-<rect x="326.2" y="151.8" width="46.2" height="198.2" rx="6" fill="#534AB7"/>
-<text x="349.3" y="143.8" font-size="13" font-weight="800" text-anchor="middle" fill="#534AB7">61</text>
-<rect x="382.4" y="350.0" width="46.2" height="0.0" rx="6" fill="#1D9E75"/>
-<text x="405.5" y="342.0" font-size="13" font-weight="800" text-anchor="middle" fill="#1D9E75">0.004</text>
-<text x="385.0" y="380" font-size="13" text-anchor="middle" fill="#344054">Refinance</text>
-<rect x="536.2" y="116.0" width="46.2" height="234.0" rx="6" fill="#534AB7"/>
-<text x="559.3" y="108.0" font-size="13" font-weight="800" text-anchor="middle" fill="#534AB7">72</text>
-<rect x="592.4" y="349.8" width="46.2" height="0.2" rx="6" fill="#1D9E75"/>
-<text x="615.5" y="341.8" font-size="13" font-weight="800" text-anchor="middle" fill="#1D9E75">0.07</text>
-<text x="595.0" y="380" font-size="13" text-anchor="middle" fill="#344054">Default mgmt</text>
-<rect x="746.2" y="174.5" width="46.2" height="175.5" rx="6" fill="#534AB7"/>
-<text x="769.3" y="166.5" font-size="13" font-weight="800" text-anchor="middle" fill="#534AB7">54</text>
-<rect x="802.4" y="349.6" width="46.2" height="0.4" rx="6" fill="#1D9E75"/>
-<text x="825.5" y="341.6" font-size="13" font-weight="800" text-anchor="middle" fill="#1D9E75">0.11</text>
-<text x="805.0" y="380" font-size="13" text-anchor="middle" fill="#344054">Loan mod</text>
-<circle cx="700" cy="32" r="6" fill="#534AB7"/>
-<text x="714" y="37" font-size="13" fill="#344054">Manual baseline hours</text>
-<circle cx="820" cy="32" r="6" fill="#1D9E75"/>
-<text x="834" y="37" font-size="13" fill="#344054">EXOS hours</text>
-</svg>
-</div>
-</article>
+
+<section class="section" id="title-schemas">
+  <div class="section-title"><div><div class="eyebrow">Title schema layer</div><h2>Every title pull lives or dies by mandatory fields, status codes, and exception handling.</h2><p class="lede">The new explanation makes the BA value visible: before a developer writes the mapper, every required field, null behavior, custom field, compliance hold, cancellation path, and manual override must be named.</p></div></div>
+  <div class="api-grid">
+    <article class="api-card"><h3><span class="api-tag schema">Order intake payload</span> Mandatory field map</h3><div class="table-wrap"><table><thead><tr><th>Field group</th><th>Fields</th><th>Why it matters</th></tr></thead><tbody><tr><td>Loan identifiers</td><td>Loan number, product type, purchase/refi</td><td>Routes fulfillment inside EXOS</td></tr><tr><td>Property</td><td>APN, legal description, county, state, property type</td><td>Required for title search</td></tr><tr><td>Borrower</td><td>Name, SSN encrypted, address</td><td>RESPA governed, PII handling applies</td></tr><tr><td>Lender</td><td>Lender ID, loan amount, closing date</td><td>Drives agent assignment and fee schedule</td></tr></tbody></table></div></article>
+    <article class="api-card"><h3><span class="api-tag hold">Conard hold</span> Blocking work before testing</h3><div class="blocker-list"><div class="blocker"><b>Phase E:</b> Error handling must define 4xx behavior, timeout thresholds, error surfacing, compliance-hold recipient, cancellation rollback, and manual override.</div><div class="blocker"><b>Phase F:</b> Acceptance criteria must define sandbox success, credential confirmation, test data type, UAT promotion gate, UAT sign-off owner, and parallel run period.</div><div class="blocker"><b>Phase B:</b> Schema detection must decide REST, SOAP, translation layer, or mixed-surface scope before sprint planning.</div></div></article>
+  </div>
+  <div class="status-map">
+    <div class="status-tile"><div class="status-code">200 / 201</div><b>Order received</b><p class="small">Create order tracking record in the LOS.</p></div>
+    <div class="status-tile"><div class="status-code">IN_FULFILLMENT</div><b>Processing</b><p class="small">Do not timeout. Use async polling or webhook.</p></div>
+    <div class="status-tile"><div class="status-code">COMPLIANCE_HOLD</div><b>Exception state</b><p class="small">Trigger manual review and named recipient workflow.</p></div>
+    <div class="status-tile"><div class="status-code">TITLE_COMMITMENT</div><b>Title available</b><p class="small">Retrieve document and trigger closing workflow.</p></div>
+    <div class="status-tile"><div class="status-code">CANCELLED</div><b>Rollback</b><p class="small">Execute cancellation logic and update audit record.</p></div>
+    <div class="status-tile"><div class="status-code">4xx / 5xx</div><b>Error path</b><p class="small">Backoff retry, surface error, escalate if threshold exceeded.</p></div>
+  </div>
 </section>
-<section id="output" class="section">
-<div class="eyebrow">05 // Full new output included</div>
-<h2>ServiceLink vs. Stewart Information Services</h2>
-<div class="output">
-<p># ServiceLink vs. Stewart Information Services</p>
-<h2>AI Adoption Intelligence Brief - June 2026</h2>
-<blockquote>**Who this is for.** You run a P&amp;L. You do not need to know what an LLM is. What you need to know is which company is using technology to compress costs and hold margin, which one is spending on AI theater, and which one is better positioned against the Amazon-shaped freight train coming at every financial services workflow. This brief answers those three questions.</blockquote>
-<h2>Executive Scorecard</h2>
-<h2>Who Is ServiceLink&#x27;s Largest Competitor?</h2>
-<p>
-<strong>Stewart Information Services (NYSE: STC)</strong> is ServiceLink&#x27;s most direct strategic competitor in the tech-enabled title, closing, valuation, and default mortgage services segment. Both companies compete for the same lender and servicer wallets across the same product lines: title insurance, appraisal management, closing orchestration, and default services.</p>
-<p>
-<strong>Why not Fidelity National Financial (FNF)?</strong> FNF is ServiceLink&#x27;s parent company - not a competitor. FNF reported $2.0B in Q1 2026 revenue with ServiceLink operating as its primary mortgage services arm. Stewart is the externally-traded, independently-operated analog.</p>
-<p>
-<strong>Stewart&#x27;s recent moves that matter to this analysis:</strong>
-</p>
-<ul>
-<li>Acquired Mortgage Contracting Services (MCS) - December 2025 - directly entering ServiceLink&#x27;s default services lane</li>
-<li>Acquired National Appraisal Network (NAN) - Q1 2026 - deepening the valuation competition</li>
-<li>Deployed Sage, a proprietary LLM inside Stewart Valuation Intelligence (SVI)</li>
-<li>Enhanced Virtual Underwriter with AI-powered search (VU Explorer) - March 2026</li>
-</ul>
-<h2>Section 1 - AI Adoption Score</h2>
-<h3>What &quot;AI Adoption Score&quot; means in P&amp;L terms</h3>
-<p>This is not a technology ranking. It is a measure of how deeply AI is wired into the revenue-generating workflows of each company - and therefore how hard it would be for a competitor to replicate their cost structure or client experience. A score of 72 means AI is doing real work inside the machine. A score of 61 means AI is present but largely assistive, sitting above the workflow rather than inside it.</p>
-<h3>ServiceLink / FNF - AI Adoption Score: 72</h3>
-<div class="table-wrap">
-<table>
-<thead>
-<tr>
-<th>Dimension</th>
-<th>Score</th>
-<th>Signal</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Data foundation</td>
-<td>82 / 100</td>
-<td>FNF-scale proprietary transaction data, Azure cloud substrate</td>
-</tr>
-<tr>
-<td>Client-facing AI</td>
-<td>85 / 100</td>
-<td>EXOS Close - real-time notary access, remote eligibility, instant scheduling</td>
-</tr>
-<tr>
-<td>Workflow depth</td>
-<td>78 / 100</td>
-<td>Eight-plus years of AI compounding inside the EXOS platform</td>
-</tr>
-<tr>
-<td>AI stack coherence</td>
-<td>70 / 100</td>
-<td>ICE EPC Platinum Partner, UAD 3.6 compliance, Elphi integration</td>
-</tr>
-<tr>
-<td>Governance posture</td>
-<td>68 / 100</td>
-<td>No standalone AI governance framework declared at ServiceLink entity level</td>
-</tr>
-<tr>
-<td>Cultural fit</td>
-<td>65 / 100</td>
-<td>Tech-first positioning is consistent; organizational adoption depth not publicly verified</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>
-<strong>The plain-English read:</strong> ServiceLink built a platform - EXOS - and has been compounding AI capability into it for eight years. The closing scheduling product is, by the company&#x27;s own documentation, the only real-time notary network scheduling system in the mortgage industry. It is not a chatbot. It is not a dashboard. It is the transaction. FNF&#x27;s own Q1 2026 SEC filing attributes industry-leading margins in part to &quot;productivity gains through automation and data at scale.&quot; That is an executive confirming AI is moving the margin line, not just the press release.</p>
-<p>
-<strong>What is missing:</strong> ServiceLink does not have a publicly declared AI governance framework at the entity level. As Freddie Mac governance requirements took effect in March 2026, this becomes a procurement gate for regulated lender partners, not just a compliance footnote.</p>
-<h3>Stewart Information Services (STC) - AI Adoption Score: 61</h3>
-<div class="table-wrap">
-<table>
-<thead>
-<tr>
-<th>Dimension</th>
-<th>Score</th>
-<th>Signal</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Governance posture</td>
-<td>72 / 100</td>
-<td>10-K explicitly flags AI regulatory uncertainty; formal risk language present</td>
-</tr>
-<tr>
-<td>Platform proprietary</td>
-<td>62 / 100</td>
-<td>Sage LLM and VU Explorer are proprietary tools with 30-year knowledge base</td>
-</tr>
-<tr>
-<td>Data foundation</td>
-<td>65 / 100</td>
-<td>Title production systems, acquisitions adding data assets</td>
-</tr>
-<tr>
-<td>Client-facing AI</td>
-<td>62 / 100</td>
-<td>Sage supports valuation decisions; VU Explorer enables agent search</td>
-</tr>
-<tr>
-<td>Workflow depth</td>
-<td>55 / 100</td>
-<td>AI sits above workflows as an assistant, not inside them as the default path</td>
-</tr>
-<tr>
-<td>AI stack coherence</td>
-<td>55 / 100</td>
-<td>Acquisition-led growth introduces integration risk</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>
-<strong>The plain-English read:</strong> Stewart has built legitimate AI tools. Sage is a real LLM running against real operational data. VU Explorer adds genuine search capability to 30 years of underwriting knowledge. These are good products. The margin risk is that they are positioned as support tools - &quot;right seat expert&quot; is Stewart&#x27;s own language for Sage. That means a loan officer can choose to use them or not. That is not the same as AI being the system through which every transaction flows.</p>
-<p>
-<strong>The acquisition pattern creates a specific concern:</strong> Stewart bought MCS in December 2025 and NAN in Q1 2026. Both are capability purchases, not organic AI development. That is a Berkshire move, not an Amazon move. It expands service lines but it does not compound the AI advantage into a replicable moat.</p>
-<p>
-<strong>AI Theater Watch flag explained:</strong> When an organization announces AI investments that do not attach to measurable workflow changes or margin outcomes, MOC flags this as Insight Theater. Stewart&#x27;s Q1 beat is real. The AI attribution is not yet confirmed in isolation. The 2029 revenue target of $4.1B requires 9.6% CAGR - AI is presented as a supporting bet, not a confirmed accelerant.</p>
-<h2>Section 2 - AI ROI Roadmap</h2>
-<h3>What each company has actually returned on its AI investment</h3>
-<p>Neither company breaks out AI-specific ROI as a standalone line in their financials. What follows is derived from public SEC filings, press releases, and market intelligence - not internal data rooms.</p>
-<h3>ServiceLink / FNF - ROI Index: 74</h3>
-<p>
-<strong>What the numbers show:</strong>
-</p>
-<div class="table-wrap">
-<table>
-<thead>
-<tr>
-<th>Metric</th>
-<th>Evidence</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Cycle compression</td>
-<td>EXOS compresses title decisions from days to seconds for eligible refinance loans</td>
-</tr>
-<tr>
-<td>Lender preference uplift</td>
-<td>87% of homebuyers prefer lenders offering EXOS-style scheduling (91% Millennials and Gen X)</td>
-</tr>
-<tr>
-<td>Closing modalities live</td>
-<td>Online, in-branch, and hybrid - all deployed under a single platform</td>
-</tr>
-<tr>
-<td>Margin attribution</td>
-<td>FNF CEO: &quot;productivity gains through automation and data at scale are a key reason we continue to deliver industry-leading margins&quot; (Q1 2026 SEC filing)</td>
-</tr>
-<tr>
-<td>Parent revenue trajectory</td>
-<td>FNF Q1 2026 total revenue: $2.0B, up from $1.8B Q1 2025 (+14%)</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>
-<strong>The ROI story in one sentence:</strong> ServiceLink is making money shorter. Every day shaved from the mortgage close cycle is a cost avoided and a lender kept. At the volume FNF operates, that compresses to real margin - confirmed in the filing, not in the press kit.</p>
-<p>
-<strong>Caveat:</strong> ServiceLink&#x27;s contribution is not reported separately from FNF. The ROI conclusion at the entity level is inferred, not directly verified.</p>
-<h3>Stewart (STC) - ROI Index: 58</h3>
-<p>
-<strong>What the numbers show:</strong>
-</p>
-<div class="table-wrap">
-<table>
-<thead>
-<tr>
-<th>Metric</th>
-<th>Evidence</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Q4 2025 revenue</td>
-<td>$794.5M (+19.6% YoY - beat analyst estimate by 2.5%)</td>
-</tr>
-<tr>
-<td>Commercial fee per file</td>
-<td>$21,000 average (+35% YoY)</td>
-</tr>
-<tr>
-<td>Adjusted EPS Q4 2025</td>
-<td>$1.65 vs. $1.35 estimate (21.9% beat)</td>
-</tr>
-<tr>
-<td>Sage deployment scope</td>
-<td>Operational within SVI; described as a support tool</td>
-</tr>
-<tr>
-<td>VU Explorer</td>
-<td>Live since March 2026; AI search on 30-year underwriting knowledge base</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>
-<strong>The ROI story in one sentence:</strong> Stewart is growing, but the growth is driven by commercial sector strength and acquisition momentum - AI is a supporting character, not the lead.</p>
-<p>
-<strong>Caveat:</strong> Analysts have noted that Stewart&#x27;s AI investments are &quot;partially relevant&quot; to the Q1 beat. The 2029 revenue model projects $4.1B with a $98.9M earnings increase from today&#x27;s $129.4M - a significant earnings expansion that will require AI to move beyond the knowledge layer into workflow automation to be realistic.</p>
-<h2>Section 3 - FAANG Score (Amazon as the Delta Benchmark)</h2>
-<h3>What the FAANG Score measures in business terms</h3>
-<p>Amazon did not win logistics, cloud, and retail by adding AI to existing processes. Amazon rebuilt the processes so AI was the default path. Every fulfillment center, every recommendation engine, every AWS product decision starts from the question: how do we make this the automatic, lowest-friction route through the system?</p>
-<p>The FAANG Score measures how close each company is to that operating model - building AI in as the infrastructure of the transaction, not layering it on top. Amazon is the benchmark at 100. Neither company reaches it. The question is who is closer and why.</p>
-<h3>ServiceLink / FNF - FAANG Score: 68</h3>
-<div class="table-wrap">
-<table>
-<thead>
-<tr>
-<th>FAANG Dimension</th>
-<th>Score</th>
-<th>Amazon Comparison</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Workflow embedding</td>
-<td>80</td>
-<td>Amazon builds so AI is the default path. EXOS is the default path for closing.</td>
-</tr>
-<tr>
-<td>Data at scale</td>
-<td>78</td>
-<td>FNF&#x27;s transaction volume creates proprietary data FNF alone can train on.</td>
-</tr>
-<tr>
-<td>Platform proprietary</td>
-<td>75</td>
-<td>EXOS is owned IP. Competitors cannot license it.</td>
-</tr>
-<tr>
-<td>Decision latency</td>
-<td>72</td>
-<td>Title decisions in seconds vs. days mirrors Amazon&#x27;s checkout and logistics speed bets.</td>
-</tr>
-<tr>
-<td>Agent and automation</td>
-<td>60</td>
-<td>No public multi-agent orchestration disclosure. This is the current gap.</td>
-</tr>
-<tr>
-<td>AI governance</td>
-<td>55</td>
-<td>No formal governance framework at the ServiceLink entity level.</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>
-<strong>Amazon gap analysis:</strong> The Azure substrate is a strategic misalignment - Amazon would own the infrastructure layer, not lease it. The agentic layer is the next competitive frontier in mortgage tech and ServiceLink has not publicly staked a position there. These two gaps are where a well-capitalized competitor (or Amazon itself via AWS for financial services) could attack the moat.</p>
-<h3>Stewart (STC) - FAANG Score: 54</h3>
-<div class="table-wrap">
-<table>
-<thead>
-<tr>
-<th>FAANG Dimension</th>
-<th>Score</th>
-<th>Amazon Comparison</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>AI governance</td>
-<td>68</td>
-<td>Stewart&#x27;s governance posture is its closest Amazon alignment - but governance without workflow redesign is defensive.</td>
-</tr>
-<tr>
-<td>Platform proprietary</td>
-<td>62</td>
-<td>Sage and VU Explorer are proprietary. But proprietary assistants are not the same as proprietary infrastructure.</td>
-</tr>
-<tr>
-<td>Data at scale</td>
-<td>60</td>
-<td>Title production data is valuable. Not yet confirmed as a compounding training asset.</td>
-</tr>
-<tr>
-<td>Client-facing AI</td>
-<td>62</td>
-<td>Sage assists decisions. Amazon&#x27;s AI makes decisions.</td>
-</tr>
-<tr>
-<td>Workflow depth</td>
-<td>50</td>
-<td>AI sits above existing workflows. Amazon rebuilds the workflow around AI.</td>
-</tr>
-<tr>
-<td>Decision latency</td>
-<td>50</td>
-<td>No evidence of transaction-speed AI comparable to EXOS Express Pass.</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>
-<strong>Amazon gap analysis:</strong> Stewart&#x27;s AI story is a knowledge layer story. VU Explorer and Sage help underwriters find answers faster and make better decisions. That is genuinely valuable - but it is not Amazon. Amazon does not build tools that help employees make better decisions. Amazon builds systems that eliminate the decision or make it automatically. Stewart needs to move from &quot;AI helps our people&quot; to &quot;AI is our process&quot; to close the Amazon gap.</p>
-<h2>Section 4 - Conard Layer Verdict (FinServ Presales)</h2>
-<p>The Conard Layer is the FinServ Presales readiness gate - it asks whether the technology, compliance posture, and operational handoff are trustworthy enough to put in front of a regulated lender client.</p>
-<h3>ServiceLink</h3>
-<div class="table-wrap">
-<table>
-<thead>
-<tr>
-<th>Gate</th>
-<th>Status</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Client Trust Gate</td>
-<td>PASS</td>
-<td>EXOS Close: lenders and borrowers have clear order status, decision timing, exception handling</td>
-</tr>
-<tr>
-<td>Compliance Gate</td>
-<td>PASS</td>
-<td>ICE EPC Platinum Partner, UAD 3.6 leader, RESPA-aligned workflows</td>
-</tr>
-<tr>
-<td>Cycle-Time Gate</td>
-<td>PASS</td>
-<td>Days to seconds on eligible title decisions - publicly quantified</td>
-</tr>
-<tr>
-<td>Failure-Mode Gate</td>
-<td>CONDITIONAL</td>
-<td>Happy path well documented; broken path and exception queue handling not publicly detailed</td>
-</tr>
-<tr>
-<td>BA Acceptance Gate</td>
-<td>PASS</td>
-<td>Integration with Cloudvirga, Elphi, ICE confirm API readiness</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>
-<strong>Control required:</strong> A formal AI governance framework must be declared at the ServiceLink entity level before enterprise lender audit cycles, consistent with Freddie Mac&#x27;s March 2026 governance requirements. This is a procurement gate, not a theoretical risk.</p>
-<h3>Stewart</h3>
-<div class="table-wrap">
-<table>
-<thead>
-<tr>
-<th>Gate</th>
-<th>Status</th>
-<th>Notes</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Client Trust Gate</td>
-<td>CONDITIONAL</td>
-<td>Sage and VU Explorer are support tools; client trust is built on Stewart&#x27;s brand, not yet on AI-verified outputs</td>
-</tr>
-<tr>
-<td>Compliance Gate</td>
-<td>OPEN</td>
-<td>10-K explicitly flags AI regulatory uncertainty as a material risk. Freddie Mac March 2026 governance requirements not addressed in public communications.</td>
-</tr>
-<tr>
-<td>Cycle-Time Gate</td>
-<td>UNQUANTIFIED</td>
-<td>No public documentation of AI-driven cycle compression comparable to EXOS</td>
-</tr>
-<tr>
-<td>Failure-Mode Gate</td>
-<td>OPEN</td>
-<td>MCS and NAN integrations are recent acquisitions - field-level data quality and API handshakes for newly acquired assets are unconfirmed</td>
-</tr>
-<tr>
-<td>BA Acceptance Gate</td>
-<td>CONDITIONAL</td>
-<td>Organic products (Sage, VU Explorer) pass. Acquired assets (MCS, NAN) require integration verification before enterprise lender delivery</td>
-</tr>
-</tbody>
-</table>
-</div>
-<p>
-<strong>Hold until:</strong> Sage deployment scope is formally documented with measurable workflow outcomes, and NAN integration compliance posture is confirmed for regulated lender workflows.</p>
-<h2>Section 5 - NorthStar Source Intelligence</h2>
-<div class="table-wrap">
-<table>
-<thead>
-<tr>
-<th>Claim</th>
-<th>Source</th>
-<th>Tag</th>
-<th>Truth Score</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>FNF AI margin attribution</td>
-<td>Q1 2026 SEC 8-K - FNF CEO statement</td>
-<td>PUBLIC-VERIFIED</td>
-<td>88 / 100</td>
-</tr>
-<tr>
-<td>EXOS cycle compression (days to seconds)</td>
-<td>ServiceLink press release, Cloudvirga integration announcement</td>
-<td>PUBLIC-VERIFIED</td>
-<td>85 / 100</td>
-</tr>
-<tr>
-<td>87% lender preference - EXOS scheduling</td>
-<td>2026 ServiceLink State of Homebuying Report (1,500+ respondents)</td>
-<td>PUBLIC-VERIFIED</td>
-<td>82 / 100</td>
-</tr>
-<tr>
-<td>Stewart Sage deployment - SVI operational</td>
-<td>Stewart in the Studio podcast, May 2026</td>
-<td>PUBLIC-VERIFIED</td>
-<td>84 / 100</td>
-</tr>
-<tr>
-<td>Stewart VU Explorer - March 2026 launch</td>
-<td>BusinessWire press release, March 25, 2026</td>
-<td>PUBLIC-VERIFIED</td>
-<td>90 / 100</td>
-</tr>
-<tr>
-<td>Stewart Q4 2025 revenue beat</td>
-<td>Finviz earnings summary, Q4 2025</td>
-<td>PUBLIC-VERIFIED</td>
-<td>92 / 100</td>
-</tr>
-<tr>
-<td>Stewart $4.1B / 2029 revenue target</td>
-<td>SimplyWallSt narrative, June 2026</td>
-<td>INFERRED-PUBLIC</td>
-<td>72 / 100</td>
-</tr>
-<tr>
-<td>ServiceLink standalone AI ROI in dollars</td>
-<td>Not publicly disaggregated from FNF</td>
-<td>HYPOTHESIS - UNCONFIRMED</td>
-<td>45 / 100</td>
-</tr>
-<tr>
-<td>Stewart standalone AI ROI in dollars</td>
-<td>Not publicly disaggregated</td>
-<td>HYPOTHESIS - UNCONFIRMED</td>
-<td>45 / 100</td>
-</tr>
-<tr>
-<td>FAANG dimension scores (both companies)</td>
-<td>Derived from public signals, not disclosed metrics</td>
-<td>INFERRED-PUBLIC</td>
-<td>65 / 100</td>
-</tr>
-</tbody>
-</table>
-</div>
-<blockquote>**Section confidence note (NorthStar Aggregation Rule):** The ROI quantification section carries a moderate confidence rating. The majority of ROI-specific claims score below 75 / 100 because neither company publicly disaggregates AI-driven returns. Conclusions in that section reflect the most probable interpretation of available public evidence - not a verified finding.</blockquote>
-<h2>Bottom Line - What a P&amp;L Owner Should Do With This</h2>
-<p>
-<strong>If you are a lender or servicer choosing between these two vendors:</strong>
-</p>
-<p>ServiceLink has the more mature AI infrastructure, the deeper workflow integration, and the confirmed margin attribution at the parent level. The governance gap is real and should be a contract condition, not a trust assumption. Stewart is a legitimate competitor with strong brand equity and growing AI capability - but it is 12 to 18 months behind on workflow depth and has not yet demonstrated that its AI tools compress your cost per loan.</p>
-<p>
-<strong>If you are an investor watching these two companies:</strong>
-</p>
-<p>ServiceLink&#x27;s moat is platform depth - eight years of compounding into EXOS. Stewart&#x27;s moat is brand, agency network, and acquisition capital. The question for the next 24 months is whether Stewart can convert its knowledge-layer AI into workflow-embedded AI before lenders start treating EXOS-class capabilities as table stakes. If they cannot, the commercial sector premium Stewart is currently enjoying will not protect the residential and default books.</p>
-<p>
-<strong>If you are a competitor:</strong>
-</p>
-<p>The agentic layer - multi-agent orchestration for end-to-end mortgage workflow automation - is the open field. Neither company has publicly staked a defensible position there. That is where the next moat gets built. AWS Bedrock AgentCore launched in October 2025 and 80% of agents in a recent AWS hackathon were built on it. The financial services infrastructure is moving toward Amazon whether either company builds toward it or not.</p>
-<h2>Intelligence Provenance</h2>
-<p>
-<strong>Frameworks applied in this brief:</strong>
-</p>
-<ul>
-<li>NorthStar Intelligence News v4.1 - source credibility, triple verification, truth scoring</li>
-<li>Marketing Ops Catalyst v4.9 (MOC) - AI adoption diagnosis, AWSS v1.1 FAANG benchmarking, AIL Insight Theater gate, ESIL claim tagging</li>
-<li>Regulated FinServ Presales Framework - Conard Layer mortgage/title API shipping gate</li>
-</ul>
-<p>
-<strong>McDonald, E.M. (2026).</strong> ServiceLink vs. Stewart Information Services: AI Adoption Intelligence Brief. Epoch Frameworks LLC. DACR License v2.6. Fort Worth, TX.</p>
-<p>*This brief was produced using publicly available information as of June 13, 2026. No confidential, proprietary, or NDA-governed client data was used in its preparation. Scores are analytical constructs derived from the McDonald Framework Suite - they are not financial recommendations and should not be construed as investment advice.*</p>
-</div>
-</section>
-<section class="section">
-<div class="panel dark">
-<div class="eyebrow">Decision posture</div>
-<h2>ServiceLink: stronger operating system. Stewart: legitimate challenger, but not yet the process.</h2>
-<p>If this page is being used as a client-intelligence artifact, the strongest signal is not the score itself. It is the operating distinction: EXOS behaves like infrastructure. Stewart's current AI story behaves more like expert assistance. That difference matters to lenders, servicers, and anyone evaluating AI adoption in regulated mortgage workflows.</p>
-</div>
+
+<section class="section" id="brd-map">
+  <div class="section-title"><div><div class="eyebrow">BRD map embedded from the attached HTML</div><h2>The page now explains REST, SOAP, schema layers, and Conard gate mapping in business language.</h2><p class="lede">This section uses the architecture block you attached and places it inside the existing GitHub-page style, so the technical explanation is not trapped in a separate markdown file.</p></div></div>
+  <div class="arch-wrap">
+    <p class="section-head">Architecture overview — EXOS title pull system</p>
+    <div class="node" style="margin-bottom:20px;border-left:4px solid #534AB7;border-radius:0 18px 18px 0;"><p style="font-size:15px;font-weight:900;color:var(--ink);margin:0 0 6px;">What EXOS Close actually is</p><p class="node-body" style="margin:0;">EXOS Close is ServiceLink's closing and title fulfillment platform. When a lender client integrates via API, EXOS becomes the order intake, status management, and fulfillment orchestration layer. The client system does not touch the title directly. It submits an order object to EXOS, EXOS routes to the correct title agent or fulfillment queue, and status updates flow back.</p></div>
+    <p class="section-head">REST API layer — order intake and status</p>
+    <div class="two-col"><div class="node"><div class="node-head"><div class="dot dot-rest"></div><span class="node-title">What REST handles</span><span class="badge-sm badge-rest">REST</span></div><div class="node-body"><div class="flow-row"><span class="step-badge">1</span><span>Client LOS sends order initiation payload via HTTP POST to EXOS.</span></div><div class="flow-row"><span class="step-badge">2</span><span>EXOS returns order ID and acknowledgement or validation error.</span></div><div class="flow-row"><span class="step-badge">3</span><span>Client polls status by order ID or receives webhooks.</span></div><div class="flow-row"><span class="step-badge">4</span><span>Completed title data returns through status payload or document endpoint.</span></div></div></div><div class="node"><div class="node-head"><div class="dot dot-rest"></div><span class="node-title">Auth and transport</span><span class="badge-sm badge-rest">BRD-API-02</span></div><div class="node-body"><div class="field-row"><span class="field-id">Auth pattern:</span><span class="field-desc">OAuth 2.0 client credentials or API key. mTLS available for enterprise clients.</span></div><div class="field-row"><span class="field-id">Transport:</span><span class="field-desc">TLS 1.2 minimum. PII fields must be encrypted in the payload, never query parameters.</span></div><div class="field-row"><span class="field-id">IP whitelist:</span><span class="field-desc">Client IP range must be submitted before sprint 1. This is a common day-one blocker.</span></div><div class="field-row"><span class="field-id">Rate limits:</span><span class="field-desc">Calls per minute/hour/day must be confirmed; retry logic must use exponential backoff.</span></div></div></div></div>
+    <p class="section-head">SOAP API layer — legacy schema and MISMO translation</p>
+    <div class="two-col"><div class="node"><div class="node-head"><div class="dot dot-soap"></div><span class="node-title">What SOAP handles</span><span class="badge-sm badge-soap">SOAP</span></div><div class="node-body"><div class="flow-row"><span class="step-badge">A</span><span>Accept MISMO-formatted order objects from older LOS platforms.</span></div><div class="flow-row"><span class="step-badge">B</span><span>Return title commitment data and exception states in XML envelopes.</span></div><div class="flow-row"><span class="step-badge">C</span><span>Support proprietary schemas through explicit field translation.</span></div></div></div><div class="node"><div class="node-head"><div class="dot dot-soap"></div><span class="node-title">SOAP vs REST decision</span><span class="badge-sm badge-soap">BRD-SCHEMA-02</span></div><div class="node-body"><div class="field-row"><span class="field-id">MISMO 3.4:</span><span class="field-desc">REST with JSON payload.</span></div><div class="field-row"><span class="field-id">MISMO 2.x:</span><span class="field-desc">SOAP or REST with translation layer. Add 1-2 sprints.</span></div><div class="field-row"><span class="field-id">Proprietary:</span><span class="field-desc">Custom fields must be pass-through, dropped, or errored before sprint 1.</span></div><div class="field-row"><span class="field-id">Mixed:</span><span class="field-desc">Both surfaces may be in scope simultaneously.</span></div></div></div></div>
+    <p class="section-head">Conard layer gate status — from the BRD</p>
+    <div class="node"><div class="gate-row"><span class="gate-name">1 — Client Trust</span><span class="gate-status status-cond">CONDITIONAL</span><span class="gate-note">Status code map must be complete before PASS.</span></div><div class="gate-row"><span class="gate-name">2 — Compliance</span><span class="gate-status status-cond">CONDITIONAL</span><span class="gate-note">RESPA scope, PII handling, audit retention, and SLA floor required.</span></div><div class="gate-row"><span class="gate-name">3 — Cycle-Time</span><span class="gate-status status-open">OPEN</span><span class="gate-note">Baseline and target order placement times not confirmed.</span></div><div class="gate-row"><span class="gate-name">4 — Failure-Mode</span><span class="gate-status status-open">OPEN</span><span class="gate-note">Phase E error handling is not complete.</span></div><div class="gate-row"><span class="gate-name">5 — BA Acceptance</span><span class="gate-status status-open">OPEN</span><span class="gate-note">Phase F UAT and sign-off criteria are not complete.</span></div></div>
+  </div>
 </section>
 </main>
-<footer class="footer">
-<div class="footer-inner">
-<div>
-<strong>ServiceLink vs Stewart · EXOS API Client Intelligence</strong>
-<div class="small">McDonald (2026) · Epoch Frameworks LLC · DACR License v2.6</div>
-</div>
-<div class="small">Built from the api-client-intelligence repository and the June 2026 AI Adoption Intelligence output.</div>
-</div>
-</footer>
+
+  <footer class="footer">
+    <div class="wrap">
+      <strong>McDonald (2026) | Epoch Frameworks LLC | DACR License v2.6</strong><br />
+      Regulated FinServ Presales Framework — Conard Layer extension. Built from the GitHub api-client-intelligence repository.
+    </div>
+  </footer>
 </body>
 </html>
