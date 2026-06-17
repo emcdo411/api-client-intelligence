@@ -1,0 +1,158 @@
+
+<h2 class="sr-only">EXOS Title API architecture: REST and SOAP flows, schema layers, and Conard gate mapping from the ServiceLink API BRD</h2>
+
+<style>
+.arch-wrap { padding: 1.5rem 0; font-size: 13px; }
+.section-head { font-size: 11px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--color-text-secondary); margin: 0 0 10px; }
+.lane { display: grid; gap: 10px; margin-bottom: 20px; }
+.node { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 12px 14px; }
+.node-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.dot-rest { background: #534AB7; }
+.dot-soap { background: #1D9E75; }
+.dot-schema { background: #BA7517; }
+.dot-comp { background: #A32D2D; }
+.dot-conard { background: #185FA5; }
+.node-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+.node-body { font-size: 12px; color: var(--color-text-secondary); line-height: 1.6; }
+.badge-sm { font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 3px; margin-left: auto; }
+.badge-rest { background: #EEEDFE; color: #3C3489; }
+.badge-soap { background: #E1F5EE; color: #085041; }
+.badge-schema { background: #FAEEDA; color: #633806; }
+.badge-comp { background: #FCEBEB; color: #791F1F; }
+.badge-conard { background: #E6F1FB; color: #0C447C; }
+.field-row { display: flex; gap: 8px; align-items: flex-start; margin: 5px 0; }
+.field-id { font-size: 10px; font-weight: 500; color: var(--color-text-secondary); width: 110px; flex-shrink: 0; font-family: var(--font-mono); }
+.field-desc { font-size: 12px; color: var(--color-text-primary); line-height: 1.5; }
+.flow-row { display: flex; align-items: center; gap: 6px; margin: 6px 0; font-size: 12px; color: var(--color-text-primary); }
+.arrow { color: var(--color-text-secondary); font-size: 14px; }
+.step-badge { font-size: 10px; font-weight: 500; padding: 2px 6px; border-radius: 3px; background: var(--color-background-secondary); color: var(--color-text-secondary); flex-shrink: 0; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.conard-block { border-left: 2.5px solid #185FA5; padding: 10px 14px; background: var(--color-background-secondary); border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; margin-top: 8px; }
+.conard-label { font-size: 11px; font-weight: 500; color: #185FA5; }
+.conard-text { font-size: 12px; color: var(--color-text-secondary); line-height: 1.55; margin: 3px 0 0; }
+.gate-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.gate-row:last-child { border-bottom: none; }
+.gate-name { font-size: 12px; font-weight: 500; color: var(--color-text-primary); width: 160px; flex-shrink: 0; }
+.gate-status { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 3px; flex-shrink: 0; }
+.status-cond { background: #FAEEDA; color: #633806; }
+.status-open { background: #FCEBEB; color: #791F1F; }
+.gate-note { font-size: 11px; color: var(--color-text-secondary); line-height: 1.5; }
+.divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 18px 0; }
+</style>
+
+<div class="arch-wrap">
+
+<p class="section-head">Architecture overview — EXOS title pull system</p>
+<div class="node" style="margin-bottom: 20px; border-left: 2.5px solid #534AB7; border-radius: 0 var(--border-radius-lg) var(--border-radius-lg) 0;">
+  <p style="font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 6px;">What EXOS Close actually is</p>
+  <p class="node-body" style="margin: 0;">EXOS Close is ServiceLink's closing and title fulfillment platform. When a lender client integrates via API, EXOS becomes the order intake, status management, and fulfillment orchestration layer. The client system does not touch the title directly — it submits an order object to EXOS, EXOS routes to the correct title agent or fulfillment queue, and status updates flow back. The architecture has two distinct API surfaces: a REST layer for order management and a SOAP layer that handles legacy title data schemas and MISMO translation. Both must be understood and both are in scope in your BRD.</p>
+</div>
+
+<p class="section-head">REST API layer — order intake and status</p>
+<div class="two-col">
+  <div class="node">
+    <div class="node-head"><div class="dot dot-rest"></div><span class="node-title">What REST handles</span><span class="badge-sm badge-rest">REST</span></div>
+    <div class="node-body">
+      <div class="flow-row"><span class="step-badge">1</span><span>Client LOS sends order initiation payload via HTTP POST to EXOS order intake endpoint</span></div>
+      <div class="flow-row"><span class="step-badge">2</span><span>EXOS returns an order ID and acknowledgement (200/201) or a validation error (4xx)</span></div>
+      <div class="flow-row"><span class="step-badge">3</span><span>Client polls order status via GET using the order ID, or receives webhook callbacks if configured</span></div>
+      <div class="flow-row"><span class="step-badge">4</span><span>Completed title data is returned in the status payload or via a separate document retrieval endpoint</span></div>
+    </div>
+  </div>
+  <div class="node">
+    <div class="node-head"><div class="dot dot-rest"></div><span class="node-title">Auth and transport (REST)</span><span class="badge-sm badge-rest">BRD-API-02</span></div>
+    <div class="node-body">
+      <div class="field-row"><span class="field-id">Auth pattern:</span><span class="field-desc">OAuth 2.0 client credentials or API key depending on ServiceLink environment provisioning. mTLS available for enterprise clients — requires cert lead time.</span></div>
+      <div class="field-row"><span class="field-id">Transport:</span><span class="field-desc">TLS 1.2 minimum. PII fields (SSN, full DOB, borrower name) must be in encrypted payload — not query parameters.</span></div>
+      <div class="field-row"><span class="field-id">IP whitelist:</span><span class="field-desc">BRD-API-03 — client IP range must be submitted to ServiceLink API ops before sprint 1. This is the most common day-one blocker.</span></div>
+      <div class="field-row"><span class="field-id">Rate limits:</span><span class="field-desc">BRD-API-04 — calls per minute/hour/day must be confirmed. Retry logic must use exponential backoff against this limit.</span></div>
+    </div>
+  </div>
+</div>
+
+<p class="section-head">SOAP API layer — legacy schema and MISMO translation</p>
+<div class="two-col">
+  <div class="node">
+    <div class="node-head"><div class="dot dot-soap"></div><span class="node-title">What SOAP handles</span><span class="badge-sm badge-soap">SOAP</span></div>
+    <div class="node-body">
+      <p style="margin: 0 0 8px;">The SOAP surface exists because the title industry runs heavily on MISMO 2.x and 3.4 schemas inherited from legacy LOS platforms (ICE Encompass, Empower, Fiserv). EXOS maintains a SOAP interface to:</p>
+      <div class="flow-row"><span class="step-badge">A</span><span>Accept MISMO-formatted order objects from older LOS platforms that cannot output JSON</span></div>
+      <div class="flow-row"><span class="step-badge">B</span><span>Return title commitment data, search results, and exception states in MISMO-compliant XML envelopes</span></div>
+      <div class="flow-row"><span class="step-badge">C</span><span>Support clients with proprietary schemas via a translation layer that maps non-standard fields to EXOS-accepted values</span></div>
+    </div>
+  </div>
+  <div class="node">
+    <div class="node-head"><div class="dot dot-soap"></div><span class="node-title">SOAP vs REST decision</span><span class="badge-sm badge-soap">BRD-SCHEMA-02</span></div>
+    <div class="node-body">
+      <div class="field-row"><span class="field-id">MISMO 3.4:</span><span class="field-desc">Use REST with JSON payload. MISMO 3.4-aware LOS platforms (modern Encompass, newer MSP builds) output JSON-compatible field maps.</span></div>
+      <div class="field-row"><span class="field-id">MISMO 2.x:</span><span class="field-desc">Use SOAP or REST with a translation layer. Budget 1-2 additional sprints for schema translation build and test.</span></div>
+      <div class="field-row"><span class="field-id">Proprietary:</span><span class="field-desc">BRD-SCHEMA-03 required. Custom fields not in the EXOS schema must be designated as pass-through, dropped, or errored before sprint 1.</span></div>
+      <div class="field-row"><span class="field-id">Mixed:</span><span class="field-desc">Some clients output MISMO 3.4 for origination but 2.x for servicing. Both surfaces may be in scope simultaneously.</span></div>
+    </div>
+  </div>
+</div>
+
+<p class="section-head">Schema layers — what the title pull actually contains</p>
+<div class="node" style="margin-bottom: 12px;">
+  <div class="node-head"><div class="dot dot-schema"></div><span class="node-title">Order intake payload — mandatory field map (BRD-SCHEMA-04)</span><span class="badge-sm badge-schema">Required before sprint 1</span></div>
+  <div class="node-body">
+    <div class="two-col" style="margin-top: 8px; gap: 8px;">
+      <div>
+        <div class="field-row"><span class="field-id">Primary object:</span><span class="field-desc">Loan number, property address, borrower name — the three anchors EXOS needs to route the order</span></div>
+        <div class="field-row"><span class="field-id">Property fields:</span><span class="field-desc">APN, legal description, county, state, property type, transaction type (purchase/refi)</span></div>
+        <div class="field-row"><span class="field-id">Borrower fields:</span><span class="field-desc">Name, SSN (encrypted), address — RESPA-governed, PII in transit rules apply</span></div>
+      </div>
+      <div>
+        <div class="field-row"><span class="field-id">Lender fields:</span><span class="field-desc">Lender ID, loan amount, closing date, product type — drives fulfillment routing in EXOS</span></div>
+        <div class="field-row"><span class="field-id">Null handling:</span><span class="field-desc">BRD-SCHEMA-05 — does a null required field return 4xx or silently drop? Must be tested both ways before UAT</span></div>
+        <div class="field-row"><span class="field-id">Custom fields:</span><span class="field-desc">BRD-SCHEMA-03 — any field not in the EXOS schema must have an explicit handling decision before dev writes the mapper</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="node" style="margin-bottom: 20px;">
+  <div class="node-head"><div class="dot dot-schema"></div><span class="node-title">Title pull response payload — what EXOS sends back (BRD-SCHEMA-06)</span><span class="badge-sm badge-schema">Status code map required</span></div>
+  <div class="node-body">
+    <div class="two-col" style="margin-top: 8px; gap: 8px;">
+      <div>
+        <div class="field-row"><span class="field-id">Order received:</span><span class="field-desc">Order ID + acknowledgement — triggers client-side order tracking record creation</span></div>
+        <div class="field-row"><span class="field-id">In fulfillment:</span><span class="field-desc">Intermediate status — client must not timeout waiting; async polling or webhook required</span></div>
+        <div class="field-row"><span class="field-id">Exception / hold:</span><span class="field-desc">Compliance hold, title defect, missing doc — triggers manual review workflow; BRD-ERR-04 recipient must be named</span></div>
+      </div>
+      <div>
+        <div class="field-row"><span class="field-id">Title commitment:</span><span class="field-desc">Document URL or embedded XML — the actual title data. Triggers closing workflow on client side</span></div>
+        <div class="field-row"><span class="field-id">Completed:</span><span class="field-desc">Order closed and archived — triggers final status update in client LOS</span></div>
+        <div class="field-row"><span class="field-id">Cancelled:</span><span class="field-desc">BRD-ERR-05 — cancellation must have a dedicated endpoint. RESPA requires a documented cancellation path before go-live</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="section-head">Conard layer gate status — from your BRD</p>
+<div class="node" style="margin-bottom: 20px;">
+  <div class="gate-row"><span class="gate-name">1 — Client Trust Gate</span><span class="gate-status status-cond">CONDITIONAL</span><span class="gate-note">Client-side POC named. Status code map (BRD-SCHEMA-06) must be complete before PASS — exception handling and decision timing not yet documented.</span></div>
+  <div class="gate-row"><span class="gate-name">2 — Compliance Gate</span><span class="gate-status status-cond">CONDITIONAL</span><span class="gate-note">RESPA scope and PII handling fields required. Audit retention and SLA floor must be answered. Model governance required if EXOS automated eligibility is in scope.</span></div>
+  <div class="gate-row"><span class="gate-name">3 — Cycle-Time Gate</span><span class="gate-status status-open">OPEN</span><span class="gate-note">Baseline order placement time and target integration time not yet confirmed. Must be quantified or the owner named before UAT can be scheduled.</span></div>
+  <div class="gate-row"><span class="gate-name">4 — Failure-Mode Gate</span><span class="gate-status status-open">OPEN</span><span class="gate-note">All six Phase E fields (4xx handling, timeout, error surfacing, compliance hold recipient, cancellation, manual override) must be populated. Currently open.</span></div>
+  <div class="gate-row"><span class="gate-name">5 — BA Acceptance Gate</span><span class="gate-status status-open">OPEN</span><span class="gate-note">Sandbox success criteria, credential confirmation, and UAT sign-off owner not yet named. Open until all Phase F fields are populated and signed.</span></div>
+  <div class="conard-block" style="margin-top: 12px;">
+    <p class="conard-label">Current Conard Verdict: HOLD</p>
+    <p class="conard-text">Three gates are open. API testing cannot be scheduled until Gates 3, 4, and 5 are closed. Gates 1 and 2 are conditional and can run parallel to gate closure. The blocking work is Phase E (error handling documentation) and Phase F (acceptance criteria sign-off).</p>
+  </div>
+</div>
+
+<p class="section-head">What you need to build next</p>
+<div class="two-col">
+  <div class="node">
+    <div class="node-head"><div class="dot dot-conard"></div><span class="node-title">To close Gate 3 (cycle time)</span></div>
+    <div class="node-body">Get the client to confirm: how long does a title order take today end to end? What is the target with EXOS integration? If they cannot provide a number, name an owner who will deliver it before UAT kickoff and document that name in BRD-SCHED-01.</div>
+  </div>
+  <div class="node">
+    <div class="node-head"><div class="dot dot-conard"></div><span class="node-title">To close Gates 4 and 5</span></div>
+    <div class="node-body">Walk through Phase E and Phase F of the discovery guide in your next client session. Every field in BRD-ERR-01 through BRD-ERR-06 and BRD-TEST-01 through BRD-TEST-06 must have a named answer and a named owner. That is the minimum for SHIP WITH CONTROLS.</div>
+  </div>
+</div>
+
+</div>
